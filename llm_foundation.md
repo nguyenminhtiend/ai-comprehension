@@ -60,7 +60,7 @@ If the complete guide feels overwhelming, study these **in order**. Each link po
 
 These anchor numbers are the revised learning order; the full mapping from the original guide is in [Appendix D](#question-crosswalk).
 
-### Navigation
+## Navigation
 
 - [Chapter 1: Build the mental model](#chapter-1) — 8 concept cards
 - [Chapter 2: Understand the mathematics of learning](#chapter-2) — 12 concept cards
@@ -74,6 +74,7 @@ These anchor numbers are the revised learning order; the full mapping from the o
 - [Chapter 10: Applied engineering cases](#chapter-10) — 11 practice cases
 - [Full inference walkthrough](#full-inference-walkthrough)
 - [Formula cheat sheet](#formula-cheat-sheet)
+- [Concept map](#appendix-c--concept-map)
 - [Original-to-new question crosswalk](#question-crosswalk)
 - [Editorial and accuracy review](#editorial-review)
 - [Source bibliography](#source-bibliography)
@@ -81,6 +82,7 @@ These anchor numbers are the revised learning order; the full mapping from the o
 ---
 
 <a id="chapter-1"></a>
+
 ## Chapter 1 — Build the mental model
 
 **Start with a distinction:** an LLM is not just a chatbot API. It is a trained model that assigns probabilities to token sequences, plus a runtime that turns those probabilities into generated output. Training learns parameters; inference uses them.
@@ -105,6 +107,7 @@ not a mandatory additional layer of the hierarchy.
 **Study check:** Can you explain the chapter’s diagram or comparison without definitions in front of you? Then practice the 8 questions below.
 
 <a id="q001"></a>
+
 ### 001. How do AI, machine learning, deep learning, and generative AI relate?
 
 **30-second answer:** AI is the broad goal of building systems that perform tasks associated with intelligence. ML learns statistical behavior from data; deep learning is ML using multi-layer neural networks. Generative AI learns to produce content such as text, images, or audio.
@@ -114,6 +117,7 @@ not a mandatory additional layer of the hierarchy.
 <small>Original Q01</small>
 
 <a id="q002"></a>
+
 ### 002. What separates discriminative from generative models?
 
 **30-second answer:** A discriminative model predicts a target conditioned on input, commonly `p(y|x)`; a generative model learns a distribution that supports generating data, such as `p(x)` or `p(x|condition)`.
@@ -123,6 +127,7 @@ not a mandatory additional layer of the hierarchy.
 <small>Original Q02</small>
 
 <a id="q003"></a>
+
 ### 003. What is supervised learning?
 
 **30-second answer:** Learning a mapping from inputs to labeled targets by minimizing prediction error on examples.
@@ -132,15 +137,17 @@ not a mandatory additional layer of the hierarchy.
 <small>Original Q03</small>
 
 <a id="q004"></a>
+
 ### 004. What is self-supervised learning, and why is it central to LLMs?
 
 **30-second answer:** Self-supervised learning constructs targets from the data itself—for example, using earlier tokens to predict the next token—rather than requiring humans to label every token.
 
-**How it works / where it breaks:** In `The sky is blue`, the target after `The sky is` can be `blue`. Autoregressive models learn conditional next-token probabilities across many sequences. Other objectives, such as masked-token or span corruption, also exist; **not all language models train only with causal next-token prediction**. [S02](#source-s02)[S03](#source-s03)[S04](#source-s04)
+**How it works / where it breaks:** In `The sky is blue`, the target after `The sky is` can be `blue`. Autoregressive models learn conditional next-token probabilities across many sequences. Other objectives, such as masked-token or span corruption, also exist; **not all language models train only with causal next-token prediction**. [S02](#source-s02), [S03](#source-s03), [S04](#source-s04)
 
 <small>Original Q04</small>
 
 <a id="q005"></a>
+
 ### 005. What is generalization?
 
 **30-second answer:** Generalization means performing well on examples or distributions not memorized from training, rather than only reproducing the training set.
@@ -150,6 +157,7 @@ not a mandatory additional layer of the hierarchy.
 <small>Original Q05</small>
 
 <a id="q006"></a>
+
 ### 006. What are underfitting and overfitting?
 
 **30-second answer:** Underfitting fails to capture useful patterns; overfitting captures noise or idiosyncrasies that do not transfer.
@@ -159,6 +167,7 @@ not a mandatory additional layer of the hierarchy.
 <small>Original Q06</small>
 
 <a id="q007"></a>
+
 ### 007. What are parameters, hyperparameters, and activations?
 
 **30-second answer:** Parameters are learned quantities (weights/biases); hyperparameters configure training or inference (learning rate, layer count, decoding temperature); activations are intermediate outputs computed for a particular input.
@@ -168,6 +177,7 @@ not a mandatory additional layer of the hierarchy.
 <small>Original Q07</small>
 
 <a id="q008"></a>
+
 ### 008. What is the difference between training and inference?
 
 **30-second answer:** Training changes model parameters using a loss and optimizer; inference uses already-trained parameters to compute predictions and optionally generate tokens.
@@ -178,8 +188,8 @@ not a mandatory additional layer of the hierarchy.
 
 ---
 
-
 <a id="chapter-2"></a>
+
 ## Chapter 2 — Understand the mathematics of learning
 
 A neural network is many small numerical transformations connected together. It needs **representations** (vectors), a **prediction** (forward pass), a **score for errors** (loss), and a **way to change the parameters** (gradients, optimizer).
@@ -205,6 +215,7 @@ Correct target y ─────────────────────
 **Study check:** Can you explain the chapter’s diagram or comparison without definitions in front of you? Then practice the 12 questions below.
 
 <a id="q009"></a>
+
 ### 009. Why do we represent data as vectors?
 
 **30-second answer:** A vector packages numeric features or hidden states so the model can apply linear algebra efficiently.
@@ -214,6 +225,7 @@ Correct target y ─────────────────────
 <small>Original Q08</small>
 
 <a id="q010"></a>
+
 ### 010. What is a dot product?
 
 **30-second answer:** It combines corresponding vector components into a scalar and often measures alignment; attention uses dot products between query and key vectors.
@@ -223,6 +235,7 @@ Correct target y ─────────────────────
 <small>Original Q09</small>
 
 <a id="q011"></a>
+
 ### 011. What is matrix multiplication, and why do tensor shapes matter?
 
 **30-second answer:** Matrix multiplication applies many weighted combinations in parallel; compatible inner dimensions are mandatory.
@@ -232,6 +245,7 @@ Correct target y ─────────────────────
 <small>Original Q10</small>
 
 <a id="q012"></a>
+
 ### 012. What is a derivative?
 
 **30-second answer:** A derivative is the local rate of change of a scalar function, showing how sensitive the output is to a small input change.
@@ -241,6 +255,7 @@ Correct target y ─────────────────────
 <small>Original Q11</small>
 
 <a id="q013"></a>
+
 ### 013. What is a gradient?
 
 **30-second answer:** A gradient is the vector of partial derivatives of a scalar loss with respect to many parameters, pointing in the local direction of steepest increase under Euclidean geometry.
@@ -250,6 +265,7 @@ Correct target y ─────────────────────
 <small>Original Q12</small>
 
 <a id="q014"></a>
+
 ### 014. What is a loss function, and how do MSE and cross-entropy differ?
 
 **30-second answer:** A loss assigns a numerical penalty to predictions; training optimizes expected or empirical loss, not an abstract concept of intelligence.
@@ -263,6 +279,7 @@ Correct target y ─────────────────────
 <small>Original Q13 + Q14</small>
 
 <a id="q015"></a>
+
 ### 015. How does gradient descent actually update a weight?
 
 **30-second answer:** Compute a gradient of loss, then move parameters a small amount in the negative-gradient direction.
@@ -272,6 +289,7 @@ Correct target y ─────────────────────
 <small>Original Q15</small>
 
 <a id="q016"></a>
+
 ### 016. What is a learning rate, and why can too-high or too-low rates fail?
 
 **30-second answer:** Learning rate controls optimizer step magnitude. Too high can overshoot or diverge; too low can make convergence unacceptably slow.
@@ -281,6 +299,7 @@ Correct target y ─────────────────────
 <small>Original Q16</small>
 
 <a id="q017"></a>
+
 ### 017. What do full-batch, stochastic, and mini-batch training mean?
 
 **30-second answer:** Full-batch uses the entire dataset per update; stochastic gradient descent in the narrow sense uses one example; mini-batch training updates from a subset.
@@ -290,6 +309,7 @@ Correct target y ─────────────────────
 <small>Original Q17</small>
 
 <a id="q018"></a>
+
 ### 018. What is an artificial neuron?
 
 **30-second answer:** A simple artificial neuron computes a weighted sum plus bias, then passes it through an activation function.
@@ -299,6 +319,7 @@ Correct target y ─────────────────────
 <small>Original Q21</small>
 
 <a id="q019"></a>
+
 ### 019. Why do neural networks need nonlinear activation functions?
 
 **30-second answer:** Nonlinear activations allow multi-layer networks to represent relationships more complex than a single linear transformation.
@@ -308,6 +329,7 @@ Correct target y ─────────────────────
 <small>Original Q22</small>
 
 <a id="q020"></a>
+
 ### 020. What are forward pass and backpropagation?
 
 **30-second answer:** The forward pass computes outputs and loss; backpropagation efficiently computes parameter gradients by applying the chain rule backward through the computation graph.
@@ -318,8 +340,8 @@ Correct target y ─────────────────────
 
 ---
 
-
 <a id="chapter-3"></a>
+
 ## Chapter 3 — From text to tokens to predicted probabilities
 
 A language model does not ingest a string directly as a sequence of “words.” The client serializes the conversation, the tokenizer maps text to **integer IDs**, and an embedding table turns IDs into **learned vectors**. The model outputs **logits**, which can become token probabilities via softmax.
@@ -341,19 +363,21 @@ Messages → chat template → text/token stream → token IDs
 **Study check:** Can you explain the chapter’s diagram or comparison without definitions in front of you? Then practice the 12 questions below.
 
 <a id="q021"></a>
+
 ### 021. What is tokenization, and why is a token not the same as a word?
 
 **30-second answer:** Tokenization turns input content into discrete units mapped to integer IDs; the model processes those IDs rather than raw character strings.
 
-**How it works / where it breaks:** Tokens may be words, subwords, characters, bytes, or modality-specific units. Text length in characters is not token length. Tokenizer behavior is **model-specific**, including normalization, whitespace, Unicode, and special-token rules. [S14](#source-s14)[S15](#source-s15)
+**How it works / where it breaks:** Tokens may be words, subwords, characters, bytes, or modality-specific units. Text length in characters is not token length. Tokenizer behavior is **model-specific**, including normalization, whitespace, Unicode, and special-token rules. [S14](#source-s14), [S15](#source-s15)
 
 **Related distinction (original Q44):** Tokenization optimizes a representation scheme, not linguistic word boundaries; one word may be many tokens, and spaces/punctuation may join adjacent tokens.
 
-Multilingual text, emoji, code, and unusual symbols may tokenize very differently. For production, measure tokens using the **model's** tokenizer or provider accounting endpoint; English characters-per-token heuristics are unreliable for correctness or billing. [S14](#source-s14)[S16](#source-s16)
+Multilingual text, emoji, code, and unusual symbols may tokenize very differently. For production, measure tokens using the **model's** tokenizer or provider accounting endpoint; English characters-per-token heuristics are unreliable for correctness or billing. [S14](#source-s14), [S16](#source-s16)
 
 <small>Original Q40 + Q44</small>
 
 <a id="q022"></a>
+
 ### 022. How do BPE, WordPiece, and Unigram differ?
 
 **30-second answer:** They are subword tokenization families: BPE learns frequent merges; WordPiece uses a different vocabulary-selection criterion and longest-match tokenization; Unigram chooses segmentations from a probabilistic candidate vocabulary.
@@ -363,6 +387,7 @@ Multilingual text, emoji, code, and unusual symbols may tokenize very differentl
 <small>Original Q41</small>
 
 <a id="q023"></a>
+
 ### 023. What are vocabulary size and token IDs?
 
 **30-second answer:** Vocabulary size `V` is the count of token entries for a tokenizer; token IDs are integer indices into that vocabulary.
@@ -372,24 +397,27 @@ Multilingual text, emoji, code, and unusual symbols may tokenize very differentl
 <small>Original Q42</small>
 
 <a id="q024"></a>
+
 ### 024. What are special tokens and chat templates?
 
 **30-second answer:** Special tokens mark structural roles or boundaries—such as begin/end of sequence, end of turn, role separators, or other model-specific controls. A chat template serializes structured messages into the model's expected token pattern.
 
-**How it works / where it breaks:** A chat API's `{role,content}` objects are not guaranteed to map one-to-one to visible text; providers may add internal markers or hidden overhead. Wrong templates can degrade instruction following or termination. End-of-message and end-of-generation need not be the same token. [S15](#source-s15)[S16](#source-s16)
+**How it works / where it breaks:** A chat API's `{role,content}` objects are not guaranteed to map one-to-one to visible text; providers may add internal markers or hidden overhead. Wrong templates can degrade instruction following or termination. End-of-message and end-of-generation need not be the same token. [S15](#source-s15), [S16](#source-s16)
 
 <small>Original Q43</small>
 
 <a id="q025"></a>
+
 ### 025. What counts toward input and output tokens?
 
 **30-second answer:** Account for serialized instructions, message metadata/formatting, user content, and any modality tokens according to the provider; output usage may include visible text plus model-specific nonvisible output/reasoning tokens.
 
-**How it works / where it breaks:** Providers may expose cached input separately while still including it within input usage. Raw tokenizer counts can differ from billed or metered API usage because templates and internal accounting differ. Prefer authoritative usage fields and model-specific counting tools; never add cached tokens again if they are already a subset. [S15](#source-s15)[S16](#source-s16)
+**How it works / where it breaks:** Providers may expose cached input separately while still including it within input usage. Raw tokenizer counts can differ from billed or metered API usage because templates and internal accounting differ. Prefer authoritative usage fields and model-specific counting tools; never add cached tokens again if they are already a subset. [S15](#source-s15), [S16](#source-s16)
 
 <small>Original Q45</small>
 
 <a id="q026"></a>
+
 ### 026. How do probability and conditional probability enter an LLM?
 
 **30-second answer:** The model produces conditional probabilities for candidate next tokens given preceding context.
@@ -399,6 +427,7 @@ Multilingual text, emoji, code, and unusual symbols may tokenize very differentl
 <small>Original Q18</small>
 
 <a id="q027"></a>
+
 ### 027. What are logits?
 
 **30-second answer:** Logits are unnormalized scores for vocabulary candidates, typically output by the model's last projection before turning scores into probabilities.
@@ -408,6 +437,7 @@ Multilingual text, emoji, code, and unusual symbols may tokenize very differentl
 <small>Original Q19</small>
 
 <a id="q028"></a>
+
 ### 028. What is softmax?
 
 **30-second answer:** Softmax converts a vector of logits into nonnegative probabilities that sum to one.
@@ -417,6 +447,7 @@ Multilingual text, emoji, code, and unusual symbols may tokenize very differentl
 <small>Original Q20</small>
 
 <a id="q029"></a>
+
 ### 029. How is causal next-token pretraining formulated?
 
 **30-second answer:** Given a sequence, learn to maximize probability of its observed next tokens under the preceding context.
@@ -426,6 +457,7 @@ Multilingual text, emoji, code, and unusual symbols may tokenize very differentl
 <small>Original Q46</small>
 
 <a id="q030"></a>
+
 ### 030. What is teacher forcing?
 
 **30-second answer:** Teacher forcing feeds observed target-prefix tokens during sequence-model training rather than feeding the model's own previous predictions.
@@ -435,6 +467,7 @@ Multilingual text, emoji, code, and unusual symbols may tokenize very differentl
 <small>Original Q47</small>
 
 <a id="q031"></a>
+
 ### 031. What is perplexity?
 
 **30-second answer:** Perplexity is the exponential of average token negative log likelihood; it summarizes how surprised a model is by target tokens under a specified tokenization and dataset.
@@ -444,18 +477,19 @@ Multilingual text, emoji, code, and unusual symbols may tokenize very differentl
 <small>Original Q48</small>
 
 <a id="q032"></a>
+
 ### 032. Where does pretraining data quality matter?
 
 **30-second answer:** Data coverage, duplication, contamination, language balance, formatting, and noise shape both model capability and limitations.
 
-**How it works / where it breaks:** Duplicates can increase memorization; low-quality text teaches undesirable patterns; missing domain/language coverage reduces reliability on that distribution. Filtering has trade-offs: aggressive filtering can remove useful minority-language or domain material. Published datasets and recipes vary; avoid assuming every commercial model used the same mix. [S05](#source-s05)[S06](#source-s06)
+**How it works / where it breaks:** Duplicates can increase memorization; low-quality text teaches undesirable patterns; missing domain/language coverage reduces reliability on that distribution. Filtering has trade-offs: aggressive filtering can remove useful minority-language or domain material. Published datasets and recipes vary; avoid assuming every commercial model used the same mix. [S05](#source-s05), [S06](#source-s06)
 
 <small>Original Q49</small>
 
 ---
 
-
 <a id="chapter-4"></a>
+
 ## Chapter 4 — Look inside a Transformer
 
 The Transformer is the computational core. In a conventional decoder block, **attention** exchanges information across allowed token positions and the **MLP** transforms each position's features. Residual connections and normalization support deep training.
@@ -479,6 +513,7 @@ Hidden states ───┬──────────────────
 **Study check:** Can you explain the chapter’s diagram or comparison without definitions in front of you? Then practice the 15 questions below.
 
 <a id="q033"></a>
+
 ### 033. Why did Transformers change sequence modeling?
 
 **30-second answer:** Self-attention lets every allowed position exchange information through learned, content-dependent weights, while training processes many positions in parallel.
@@ -488,6 +523,7 @@ Hidden states ───┬──────────────────
 <small>Original Q25</small>
 
 <a id="q034"></a>
+
 ### 034. What is the end-to-end structure of a decoder-only Transformer?
 
 **30-second answer:** Convert token IDs to vectors, inject position information, repeat causal attention and feed-forward blocks, normalize/project hidden states to vocabulary logits, and decode next tokens.
@@ -505,11 +541,13 @@ Text → tokenizer → token IDs [B,T]
   → vocabulary projection [B,T,V]
   → select next-position logits → decoding → next token
 ```
-**Key insight:** Training can score all next positions in one masked forward pass; generation of a standard autoregressive decoder is sequential across newly generated positions. [S01](#source-s01)[S05](#source-s05)
+
+**Key insight:** Training can score all next positions in one masked forward pass; generation of a standard autoregressive decoder is sequential across newly generated positions. [S01](#source-s01), [S05](#source-s05)
 
 <small>Original Q26</small>
 
 <a id="q035"></a>
+
 ### 035. What do Query, Key, and Value actually mean?
 
 **30-second answer:** Query represents what the current token seeks; Key represents how other positions can be matched; Value contains information passed forward when a match receives weight.
@@ -519,7 +557,8 @@ Text → tokenizer → token IDs [B,T]
 <small>Original Q27</small>
 
 <a id="q036"></a>
-### 036. Explain scaled dot-product attention mathematically.
+
+### 036. Explain scaled dot-product attention mathematically
 
 **30-second answer:** Attention scores query–key similarity, scales it, masks forbidden positions, uses softmax as weights, and mixes value vectors.
 
@@ -532,15 +571,17 @@ Text → tokenizer → token IDs [B,T]
 <small>Original Q28</small>
 
 <a id="q037"></a>
+
 ### 037. What makes self-attention 'self' attention?
 
 **30-second answer:** The queries, keys, and values come from different learned projections of the **same sequence's** states.
 
-**How it works / where it breaks:** In cross-attention, queries come from one sequence/state while keys and values come from another—for example, a decoder attending to an encoder. Decoder-only causal self-attention does not require an encoder. Some multimodal systems use cross-attention; others combine modalities in a shared token stream. [S01](#source-s01)[S04](#source-s04)
+**How it works / where it breaks:** In cross-attention, queries come from one sequence/state while keys and values come from another—for example, a decoder attending to an encoder. Decoder-only causal self-attention does not require an encoder. Some multimodal systems use cross-attention; others combine modalities in a shared token stream. [S01](#source-s01), [S04](#source-s04)
 
 <small>Original Q29</small>
 
 <a id="q038"></a>
+
 ### 038. Why does a causal mask matter?
 
 **30-second answer:** It prevents a next-token predictor at position `t` from seeing future target positions `t+1...`, preserving the autoregressive objective.
@@ -554,11 +595,13 @@ query pos 2                   ✓  ✓  ·  ·
 query pos 3                   ✓  ✓  ✓  ·
 query pos 4                   ✓  ✓  ✓  ✓
 ```
+
 The mask applies to attention scores, not the label-generation process itself. **[Math for this architecture]** If future tokens are visible during causal training, information leakage makes the task invalid. Other model objectives intentionally use different masks. [S01](#source-s01)
 
 <small>Original Q30</small>
 
 <a id="q039"></a>
+
 ### 039. What is multi-head attention and why use multiple heads?
 
 **30-second answer:** Multiple learned query/key/value projections allow several attention patterns and information subspaces to be modeled in parallel, then mixed together.
@@ -568,7 +611,8 @@ The mask applies to attention scores, not the label-generation process itself. *
 <small>Original Q31</small>
 
 <a id="q040"></a>
-### 040. Walk through concrete attention tensor shapes.
+
+### 040. Walk through concrete attention tensor shapes
 
 **30-second answer:** Track the batch, sequence, head, and per-head dimensions; the attention score matrix is over pairs of token positions.
 
@@ -583,20 +627,23 @@ attention weights @ V       [2,8,4,64]
 concat heads                [2,4,512]
 output projection           [2,4,512]
 ```
-In grouped-query attention, `Hq` and `Hkv` differ; K/V heads are shared among groups of query heads, so don't blindly reuse the MHA memory formula. [S01](#source-s01)[S11](#source-s11)
+
+In grouped-query attention, `Hq` and `Hkv` differ; K/V heads are shared among groups of query heads, so don't blindly reuse the MHA memory formula. [S01](#source-s01), [S11](#source-s11)
 
 <small>Original Q32</small>
 
 <a id="q041"></a>
+
 ### 041. Why does attention have a quadratic component in sequence length?
 
 **30-second answer:** Full attention compares each of `T` query positions with `T` key positions, producing `T²` pairwise scores per head.
 
-**How it works / where it breaks:** Score computation scales roughly `O(T²dh)` per head; projection and MLP costs may also dominate at some dimensions and sequence lengths. Optimized attention kernels can avoid materializing the full `T×T` matrix in high-bandwidth memory without making full attention's arithmetic complexity universally linear. [S01](#source-s01)[S12](#source-s12)
+**How it works / where it breaks:** Score computation scales roughly `O(T²dh)` per head; projection and MLP costs may also dominate at some dimensions and sequence lengths. Optimized attention kernels can avoid materializing the full `T×T` matrix in high-bandwidth memory without making full attention's arithmetic complexity universally linear. [S01](#source-s01), [S12](#source-s12)
 
 <small>Original Q33</small>
 
 <a id="q042"></a>
+
 ### 042. What does the feed-forward network do in a Transformer block?
 
 **30-second answer:** After attention exchanges information across positions, a position-wise feed-forward network transforms features **within each token position**.
@@ -606,6 +653,7 @@ In grouped-query attention, `Hq` and `Hkv` differ; K/V heads are shared among gr
 <small>Original Q34</small>
 
 <a id="q043"></a>
+
 ### 043. What are residual connections and why do they help?
 
 **30-second answer:** Residual connections add a layer's transformation to its input: `y=x+F(x)`, preserving an identity path for information and gradients.
@@ -615,15 +663,17 @@ In grouped-query attention, `Hq` and `Hkv` differ; K/V heads are shared among gr
 <small>Original Q35</small>
 
 <a id="q044"></a>
+
 ### 044. What is LayerNorm vs RMSNorm?
 
 **30-second answer:** LayerNorm centers and rescales a feature vector using its mean and variance; RMSNorm rescales using root-mean-square magnitude without subtracting the mean.
 
-**How it works / where it breaks:** **[Math; simplified]** `LN(x)=(x−μ)/√(σ²+ε) ·γ+β`; `RMSNorm(x)=x/√(mean(x²)+ε)·γ`. `μ`, `σ²` are within-normalized-dimension statistics; `γ`, `β` are learned scale/shift (when provided); `ε` stabilizes division. Architecture and norm placement vary. [S01](#source-s01)[S13](#source-s13)
+**How it works / where it breaks:** **[Math; simplified]** `LN(x)=(x−μ)/√(σ²+ε) ·γ+β`; `RMSNorm(x)=x/√(mean(x²)+ε)·γ`. `μ`, `σ²` are within-normalized-dimension statistics; `γ`, `β` are learned scale/shift (when provided); `ε` stabilizes division. Architecture and norm placement vary. [S01](#source-s01), [S13](#source-s13)
 
 <small>Original Q36</small>
 
 <a id="q045"></a>
+
 ### 045. What is pre-norm vs post-norm?
 
 **30-second answer:** In pre-norm blocks the normalization precedes attention/MLP (`x+F(Norm(x))`); in post-norm blocks it follows the residual sum (`Norm(x+F(x))`).
@@ -633,15 +683,17 @@ In grouped-query attention, `Hq` and `Hkv` differ; K/V heads are shared among gr
 <small>Original Q37</small>
 
 <a id="q046"></a>
+
 ### 046. If attention understands content, why add positional information?
 
 **30-second answer:** Attention needs information about sequence position. Content-only self-attention without positional mechanisms is permutation-equivariant; causal masks provide directional structure, but positional methods explicitly encode richer order or offsets.
 
-**How it works / where it breaks:** A content-only attention operation can be permutation-equivariant if it has no positional information or order-dependent mask. **Causal masking itself is order dependent**, so avoid saying every form of attention is completely order-blind. Learned positions, sinusoidal encodings, RoPE, and relative biases provide different kinds of position signals; they are not plug-and-play replacements. [S01](#source-s01)[S10](#source-s10)
+**How it works / where it breaks:** A content-only attention operation can be permutation-equivariant if it has no positional information or order-dependent mask. **Causal masking itself is order dependent**, so avoid saying every form of attention is completely order-blind. Learned positions, sinusoidal encodings, RoPE, and relative biases provide different kinds of position signals; they are not plug-and-play replacements. [S01](#source-s01), [S10](#source-s10)
 
 <small>Original Q38</small>
 
 <a id="q047"></a>
+
 ### 047. What is RoPE, intuitively?
 
 **30-second answer:** RoPE encodes position by rotating pairs of query/key features through position-dependent angles, allowing attention scores to reflect relative offsets.
@@ -652,8 +704,8 @@ In grouped-query attention, `Hq` and `Hkv` differ; K/V heads are shared among gr
 
 ---
 
-
 <a id="chapter-5"></a>
+
 ## Chapter 5 — Training, post-training and adaptation
 
 Separate **what is learned**, **what data teaches it**, and **which parameters change**:
@@ -671,6 +723,7 @@ Separate **what is learned**, **what data teaches it**, and **which parameters c
 **Study check:** Can you explain the chapter’s diagram or comparison without definitions in front of you? Then practice the 12 questions below.
 
 <a id="q048"></a>
+
 ### 048. What are scaling laws—and what do they *not* guarantee?
 
 **30-second answer:** Empirical scaling laws fit relationships between model size, data, compute, and predictive loss within studied regimes; they guide research and capacity decisions but are not physics laws.
@@ -680,15 +733,17 @@ Separate **what is learned**, **what data teaches it**, and **which parameters c
 <small>Original Q50</small>
 
 <a id="q049"></a>
+
 ### 049. What are common limitations of the pretraining objective?
 
 **30-second answer:** Predicting probable text does not independently enforce truth, up-to-date knowledge, task alignment, calibration, or correct reasoning.
 
-**How it works / where it breaks:** A continuation can be statistically plausible but false. Training examples may contain contradictions; knowledge is compressed into parameters, not maintained as a transactional record. Post-training and application-level checks can improve behavior but cannot turn a probabilistic model into an intrinsically authoritative source. [S05](#source-s05)[S07](#source-s07)
+**How it works / where it breaks:** A continuation can be statistically plausible but false. Training examples may contain contradictions; knowledge is compressed into parameters, not maintained as a transactional record. Post-training and application-level checks can improve behavior but cannot turn a probabilistic model into an intrinsically authoritative source. [S05](#source-s05), [S07](#source-s07)
 
 <small>Original Q51</small>
 
 <a id="q050"></a>
+
 ### 050. What is the difference between optimization progress and genuine capability gain?
 
 **30-second answer:** Lower training loss indicates a better fit to the training objective; useful capability requires independent evidence on target tasks and conditions.
@@ -698,6 +753,7 @@ Separate **what is learned**, **what data teaches it**, and **which parameters c
 <small>Original Q52</small>
 
 <a id="q051"></a>
+
 ### 051. How does supervised fine-tuning differ from pretraining?
 
 **30-second answer:** SFT updates pretrained parameters or adapters on examples of desired input–response behavior, using a supervised objective.
@@ -706,11 +762,12 @@ Separate **what is learned**, **what data teaches it**, and **which parameters c
 
 **Related distinction (original Q54):** Pretraining learns broad statistical language behavior from large-scale data; instruction tuning teaches the model how to respond to requests and conversational roles.
 
-Next-token training on raw text can model many genres without prioritizing user helpfulness. Instruction tuning concentrates probability mass on preferred response formats and task-following patterns. They may use similar token prediction losses but different data, masks, and objectives. Modern training recipes can involve several stages rather than one fixed pipeline. [S05](#source-s05)[S07](#source-s07)
+Next-token training on raw text can model many genres without prioritizing user helpfulness. Instruction tuning concentrates probability mass on preferred response formats and task-following patterns. They may use similar token prediction losses but different data, masks, and objectives. Modern training recipes can involve several stages rather than one fixed pipeline. [S05](#source-s05), [S07](#source-s07)
 
 <small>Original Q53 + Q54</small>
 
 <a id="q052"></a>
+
 ### 052. What is RLHF, and what does preference optimization actually optimize?
 
 **30-second answer:** Reinforcement learning from human feedback uses human preference information to improve a model's response policy; a classic pipeline learns a reward model from rankings and optimizes the policy against it.
@@ -719,11 +776,12 @@ Next-token training on raw text can model many genres without prioritizing user 
 
 **Related distinction (original Q57):** It increases relative likelihood of preferred outputs over less-preferred outputs under a specified objective, not objective 'truth' or guaranteed human values.
 
-Preference labels may encode style, task success, safety boundaries, or annotator bias. A model can optimize apparent helpfulness while remaining confidently wrong. Keep 'preference alignment' separate from factual grounding and explicit application correctness constraints. [S07](#source-s07)[S08](#source-s08)
+Preference labels may encode style, task success, safety boundaries, or annotator bias. A model can optimize apparent helpfulness while remaining confidently wrong. Keep 'preference alignment' separate from factual grounding and explicit application correctness constraints. [S07](#source-s07), [S08](#source-s08)
 
 <small>Original Q55 + Q57</small>
 
 <a id="q053"></a>
+
 ### 053. What is DPO, and how does it differ from classic RLHF?
 
 **30-second answer:** Direct Preference Optimization learns from chosen/rejected responses without fitting a separate explicit reward model and running an online RL loop in the original DPO formulation.
@@ -733,6 +791,7 @@ Preference labels may encode style, task success, safety boundaries, or annotato
 <small>Original Q56</small>
 
 <a id="q054"></a>
+
 ### 054. How does safety training affect model behavior?
 
 **30-second answer:** Safety training and policy-specific post-training shift response probabilities toward permitted, useful responses and away from disallowed behaviors; implementations vary by model family and provider.
@@ -742,6 +801,7 @@ Preference labels may encode style, task success, safety boundaries, or annotato
 <small>Original Q58</small>
 
 <a id="q055"></a>
+
 ### 055. When should you use full fine-tuning?
 
 **30-second answer:** Full fine-tuning updates all or most base-model parameters, appropriate when substantial model behavior adaptation justifies higher training, checkpoint, and regression cost.
@@ -751,6 +811,7 @@ Preference labels may encode style, task success, safety boundaries, or annotato
 <small>Original Q76</small>
 
 <a id="q056"></a>
+
 ### 056. What is LoRA, mathematically?
 
 **30-second answer:** Low-Rank Adaptation freezes a pretrained weight matrix and learns a low-rank update instead of directly updating the entire matrix.
@@ -760,15 +821,17 @@ Preference labels may encode style, task success, safety boundaries, or annotato
 <small>Original Q77</small>
 
 <a id="q057"></a>
+
 ### 057. What is QLoRA, and what stays quantized?
 
 **30-second answer:** In the original QLoRA approach, the pretrained base weights are loaded in low-bit quantized form and kept frozen while trainable LoRA adapters receive gradients.
 
-**How it works / where it breaks:** This reduces base-weight memory during adapter training; computations still use supported higher-precision arithmetic and dequantization pathways. The original paper introduced 4-bit NF4, double quantization, and paged optimizers. 'QLoRA' does not mean training every base weight directly as a four-bit integer, and final inference quantization is a separate decision. [S20](#source-s20)[S30](#source-s30)
+**How it works / where it breaks:** This reduces base-weight memory during adapter training; computations still use supported higher-precision arithmetic and dequantization pathways. The original paper introduced 4-bit NF4, double quantization, and paged optimizers. 'QLoRA' does not mean training every base weight directly as a four-bit integer, and final inference quantization is a separate decision. [S20](#source-s20), [S30](#source-s30)
 
 <small>Original Q78</small>
 
 <a id="q058"></a>
+
 ### 058. What is knowledge distillation?
 
 **30-second answer:** Distillation trains a student model to approximate selected behavior of a stronger teacher, often using teacher-produced probabilities, outputs, or features.
@@ -778,6 +841,7 @@ Preference labels may encode style, task success, safety boundaries, or annotato
 <small>Original Q79</small>
 
 <a id="q059"></a>
+
 ### 059. How do you decide whether adaptation is justified?
 
 **30-second answer:** Adapt only after demonstrating a persistent, measurable gap not adequately fixed by instruction design, application constraints, or choosing an existing model.
@@ -788,8 +852,8 @@ Preference labels may encode style, task success, safety boundaries, or annotato
 
 ---
 
-
 <a id="chapter-6"></a>
+
 ## Chapter 6 — Generation behavior and output correctness
 
 A model's raw output is **logits**, not a sentence. Generation makes repeated choices: adjust the scores, optionally restrict allowed tokens, select a token, append it to the context, and repeat until a stop condition.
@@ -807,6 +871,7 @@ logits → (temperature / penalties / constraints)
 **Study check:** Can you explain the chapter’s diagram or comparison without definitions in front of you? Then practice the 11 questions below.
 
 <a id="q060"></a>
+
 ### 060. What are greedy decoding and stochastic sampling?
 
 **30-second answer:** Greedy decoding picks the highest-scoring available token at each step; sampling draws a token according to a modified probability distribution.
@@ -816,6 +881,7 @@ logits → (temperature / penalties / constraints)
 <small>Original Q59</small>
 
 <a id="q061"></a>
+
 ### 061. What does decoding temperature change mathematically?
 
 **30-second answer:** For positive temperature τ, divide logits by τ before softmax. Larger τ generally flattens the distribution; smaller positive τ sharpens it. An API setting of zero follows provider/runtime-specific handling.
@@ -825,6 +891,7 @@ logits → (temperature / penalties / constraints)
 <small>Original Q60</small>
 
 <a id="q062"></a>
+
 ### 062. How do top-k and top-p sampling work?
 
 **30-second answer:** Top-k retains at most `k` highest-ranked tokens; top-p (nucleus sampling) retains the smallest high-probability set with cumulative probability at least `p`, then renormalizes.
@@ -834,6 +901,7 @@ logits → (temperature / penalties / constraints)
 <small>Original Q61</small>
 
 <a id="q063"></a>
+
 ### 063. Why isn't temperature a calibration knob?
 
 **30-second answer:** Generation temperature controls the diversity of sampled token choices; it does not by itself guarantee that a response's expressed confidence matches its probability of correctness.
@@ -843,6 +911,7 @@ logits → (temperature / penalties / constraints)
 <small>Original Q62</small>
 
 <a id="q064"></a>
+
 ### 064. What are repetition penalties, frequency penalties, and presence penalties?
 
 **30-second answer:** They modify token selection to discourage repeated text or already-seen tokens; exact scoring rules and availability differ by implementation.
@@ -852,15 +921,17 @@ logits → (temperature / penalties / constraints)
 <small>Original Q63</small>
 
 <a id="q065"></a>
+
 ### 065. What makes generation stop?
 
 **30-second answer:** Stopping can occur at a learned end-of-generation token, configured stop sequence, output-token limit, or a provider/runtime-specific terminal condition.
 
-**How it works / where it breaks:** Stopping due to a length cap may leave incomplete JSON or unfinished prose; check a provider's finish reason. End-of-turn markers may be different from end-of-sequence markers. A stop string can be removed from returned text even if it influenced generated content. [S16](#source-s16)[S17](#source-s17)
+**How it works / where it breaks:** Stopping due to a length cap may leave incomplete JSON or unfinished prose; check a provider's finish reason. End-of-turn markers may be different from end-of-sequence markers. A stop string can be removed from returned text even if it influenced generated content. [S16](#source-s16), [S17](#source-s17)
 
 <small>Original Q64</small>
 
 <a id="q066"></a>
+
 ### 066. What is beam search, and why is it not always suitable for chat?
 
 **30-second answer:** Beam search keeps several high-scoring candidate sequences to approximate high-probability sequence search instead of choosing one token at a time greedily.
@@ -870,6 +941,7 @@ logits → (temperature / penalties / constraints)
 <small>Original Q65</small>
 
 <a id="q067"></a>
+
 ### 067. Why is text generation often nondeterministic?
 
 **30-second answer:** Sampling adds randomness; even at nominally deterministic decoding, distributed kernels, precision, backend changes, and provider model updates can change outputs.
@@ -879,6 +951,7 @@ logits → (temperature / penalties / constraints)
 <small>Original Q66</small>
 
 <a id="q068"></a>
+
 ### 068. What is hallucination, and why does it happen?
 
 **30-second answer:** Hallucination is generated content that is ungrounded, incorrect, or fabricated relative to the task's truth requirements. A plausible continuation is not the same as verified fact.
@@ -888,6 +961,7 @@ logits → (temperature / penalties / constraints)
 <small>Original Q73</small>
 
 <a id="q069"></a>
+
 ### 069. What does it mean for an LLM to 'reason'?
 
 **30-second answer:** Operationally, reasoning refers to successfully transforming information through multi-step inference or problem solving; the underlying cognitive interpretation remains debated.
@@ -897,6 +971,7 @@ logits → (temperature / penalties / constraints)
 <small>Original Q74</small>
 
 <a id="q070"></a>
+
 ### 070. What is structured output, and how is it enforced?
 
 **30-second answer:** Structured output means requesting a format/schema. Supported constrained decoders can restrict next tokens to enforce schema-compatible syntax, but do not guarantee correct meaning, successful completion, or that every response is schema-shaped (e.g., refusal cases).
@@ -907,8 +982,8 @@ logits → (temperature / penalties / constraints)
 
 ---
 
-
 <a id="chapter-7"></a>
+
 ## Chapter 7 — Model families, multimodality and context
 
 “Transformer” is not one universal layout. Models vary in how they represent inputs, which directions they attend, and which parts are active per token.
@@ -926,15 +1001,17 @@ logits → (temperature / penalties / constraints)
 **Study check:** Can you explain the chapter’s diagram or comparison without definitions in front of you? Then practice the 5 questions below.
 
 <a id="q071"></a>
+
 ### 071. How do encoder-only, decoder-only, and encoder–decoder architectures differ?
 
 **30-second answer:** Encoder-only models build context-aware representations, often with bidirectional attention; decoder-only autoregressive models generate tokens from a causal prefix; encoder–decoder models encode an input then generate an output conditioned on that encoding.
 
-**How it works / where it breaks:** BERT is a canonical encoder-only example, GPT-style models illustrate decoder-only generation, and T5 illustrates encoder–decoder text-to-text learning. These are families, not exhaustive descriptions of every model, especially multimodal and hybrid architectures. [S02](#source-s02)[S03](#source-s03)[S05](#source-s05)
+**How it works / where it breaks:** BERT is a canonical encoder-only example, GPT-style models illustrate decoder-only generation, and T5 illustrates encoder–decoder text-to-text learning. These are families, not exhaustive descriptions of every model, especially multimodal and hybrid architectures. [S02](#source-s02), [S03](#source-s03), [S05](#source-s05)
 
 <small>Original Q67</small>
 
 <a id="q072"></a>
+
 ### 072. How does sparse mixture-of-experts (MoE) routing work?
 
 **30-second answer:** A dense model applies its relevant dense sublayers to each token; a sparse MoE model routes token states to a subset of expert networks for some layers.
@@ -948,6 +1025,7 @@ logits → (temperature / penalties / constraints)
 <small>Original Q68 + Q69</small>
 
 <a id="q073"></a>
+
 ### 073. How do multimodal LLMs ingest images or audio?
 
 **30-second answer:** They convert non-text signals to model-consumable representations using modality-specific encoders, tokenization, or projection paths, then integrate them with language processing.
@@ -957,15 +1035,17 @@ logits → (temperature / penalties / constraints)
 <small>Original Q70</small>
 
 <a id="q074"></a>
+
 ### 074. What is a context window, exactly?
 
 **30-second answer:** It is the bounded input/state span a model or service can condition on, subject to model and API constraints; a request may also have separate output limits.
 
-**How it works / where it breaks:** A provider may limit total input+output, input alone, or separate sublimits, and multimodal inputs may consume variable budget. Distinguish *advertised acceptance limit*, *effective useful recall/use*, and *computational/memory cost*. Long context is not synonymous with reliable reasoning over all earlier material. [S15](#source-s15)[S23](#source-s23)
+**How it works / where it breaks:** A provider may limit total input+output, input alone, or separate sublimits, and multimodal inputs may consume variable budget. Distinguish *advertised acceptance limit*, *effective useful recall/use*, and *computational/memory cost*. Long context is not synonymous with reliable reasoning over all earlier material. [S15](#source-s15), [S23](#source-s23)
 
 <small>Original Q71</small>
 
 <a id="q075"></a>
+
 ### 075. Why is long-context performance uneven?
 
 **30-second answer:** Position, distractors, length, objective, and training regime can affect how reliably a model uses information within its nominal context.
@@ -976,8 +1056,8 @@ logits → (temperature / penalties / constraints)
 
 ---
 
-
 <a id="chapter-8"></a>
+
 ## Chapter 8 — How inference engines make LLMs efficient
 
 Serving is not merely “run the model.” The engine must schedule work and manage memory across many requests.
@@ -1002,15 +1082,17 @@ request → tokenize → queue/admission → PREFILL (prompt positions)
 **Study check:** Can you explain the chapter’s diagram or comparison without definitions in front of you? Then practice the 12 questions below.
 
 <a id="q076"></a>
+
 ### 076. What happens during prefill vs decode?
 
 **30-second answer:** Prefill processes the existing prompt/context and builds the required model states/cache; decode autoregressively produces subsequent tokens, usually one logical generation step at a time.
 
-**How it works / where it breaks:** Prefill often uses large matrix operations across many prompt positions and can be compute-heavy. Decode repeatedly reads model weights and growing cache/state with relatively less parallel work per sequence, often becoming memory-bandwidth sensitive. Scheduling and hardware can change which phase dominates. [S18](#source-s18)[S27](#source-s27)
+**How it works / where it breaks:** Prefill often uses large matrix operations across many prompt positions and can be compute-heavy. Decode repeatedly reads model weights and growing cache/state with relatively less parallel work per sequence, often becoming memory-bandwidth sensitive. Scheduling and hardware can change which phase dominates. [S18](#source-s18), [S27](#source-s27)
 
 <small>Original Q81</small>
 
 <a id="q077"></a>
+
 ### 077. What is a KV cache?
 
 **30-second answer:** A key–value cache stores attention K/V states for earlier positions so later autoregressive decoding need not recompute them at every step.
@@ -1020,15 +1102,17 @@ request → tokenize → queue/admission → PREFILL (prompt positions)
 <small>Original Q82</small>
 
 <a id="q078"></a>
+
 ### 078. How do you estimate KV-cache memory?
 
 **30-second answer:** For a conventional full-history KV-cache layout, memory scales with layers, concurrent sequences, stored length, KV heads, head dimension, and bytes per element.
 
-**How it works / where it breaks:** **[Approximation]** `M_KV ≈ 2 × L × B × T × Hkv × dh × s` bytes, where `2` counts K and V, `s` bytes/element. **[Illustrative]** `L=32`, `B=1`, `T=4096`, `Hkv=8`, `dh=128`, `s=2` gives `536,870,912 bytes = 512 MiB`. This excludes allocator fragmentation, blocks, metadata, alternative attention states, and other runtime buffers. GQA reduces `Hkv` compared with standard MHA of the same query-head count. [S11](#source-s11)[S18](#source-s18)
+**How it works / where it breaks:** **[Approximation]** `M_KV ≈ 2 × L × B × T × Hkv × dh × s` bytes, where `2` counts K and V, `s` bytes/element. **[Illustrative]** `L=32`, `B=1`, `T=4096`, `Hkv=8`, `dh=128`, `s=2` gives `536,870,912 bytes = 512 MiB`. This excludes allocator fragmentation, blocks, metadata, alternative attention states, and other runtime buffers. GQA reduces `Hkv` compared with standard MHA of the same query-head count. [S11](#source-s11), [S18](#source-s18)
 
 <small>Original Q83</small>
 
 <a id="q079"></a>
+
 ### 079. What are MHA, MQA, and GQA in serving terms?
 
 **30-second answer:** Multi-head attention gives separate K/V heads for query heads; multi-query attention shares one KV head across queries; grouped-query attention uses fewer KV heads than query heads, shared within groups.
@@ -1038,6 +1122,7 @@ request → tokenize → queue/admission → PREFILL (prompt positions)
 <small>Original Q84</small>
 
 <a id="q080"></a>
+
 ### 080. What is FlashAttention—and what is it not?
 
 **30-second answer:** FlashAttention is an IO-aware, tiled algorithm for computing attention efficiently by reducing memory traffic between GPU memory levels; it is not a different language-model objective.
@@ -1047,6 +1132,7 @@ request → tokenize → queue/admission → PREFILL (prompt positions)
 <small>Original Q85</small>
 
 <a id="q081"></a>
+
 ### 081. What is quantization, and how do common numeric formats differ?
 
 **30-second answer:** Quantization represents weights and/or activations with reduced numerical precision to reduce memory, bandwidth, and sometimes computation costs.
@@ -1060,6 +1146,7 @@ FP32 uses 32 bits, FP16/BF16 16, FP8 8, INT8 8, INT4 4 *per element before metad
 <small>Original Q86 + Q87</small>
 
 <a id="q082"></a>
+
 ### 082. What is continuous batching?
 
 **30-second answer:** Continuous/in-flight batching admits and retires requests as decoding advances instead of waiting for an entire fixed batch to complete.
@@ -1069,6 +1156,7 @@ FP32 uses 32 bits, FP16/BF16 16, FP8 8, INT8 8, INT4 4 *per element before metad
 <small>Original Q88</small>
 
 <a id="q083"></a>
+
 ### 083. What is PagedAttention?
 
 **30-second answer:** PagedAttention organizes KV-cache storage using block-based memory management, reducing wasted space and enabling flexible sharing in the vLLM design.
@@ -1078,15 +1166,17 @@ FP32 uses 32 bits, FP16/BF16 16, FP8 8, INT8 8, INT4 4 *per element before metad
 <small>Original Q89</small>
 
 <a id="q084"></a>
+
 ### 084. What is prefix caching, and how is it different from a per-request KV cache?
 
 **30-second answer:** A per-request KV cache reuses earlier states *within* an ongoing generation. Prefix caching can reuse compatible prompt-prefix states *across* requests under engine-specific matching rules.
 
-**How it works / where it breaks:** Repeated system instructions or shared unchanged prefixes may reduce prefill work. A cache hit requires compatible token sequences and model/cache settings; a few changed early tokens can invalidate much reuse. Prefix caching does not bypass output decode cost, and cost/accounting may be provider-specific. [S25](#source-s25)[S32](#source-s32)
+**How it works / where it breaks:** Repeated system instructions or shared unchanged prefixes may reduce prefill work. A cache hit requires compatible token sequences and model/cache settings; a few changed early tokens can invalidate much reuse. Prefix caching does not bypass output decode cost, and cost/accounting may be provider-specific. [S25](#source-s25), [S32](#source-s32)
 
 <small>Original Q90</small>
 
 <a id="q085"></a>
+
 ### 085. What is speculative decoding?
 
 **30-second answer:** A faster draft process proposes candidate tokens; a stronger target model verifies/accepts them in larger chunks, potentially reducing sequential target-model work.
@@ -1096,15 +1186,17 @@ FP32 uses 32 bits, FP16/BF16 16, FP8 8, INT8 8, INT4 4 *per element before metad
 <small>Original Q91</small>
 
 <a id="q086"></a>
+
 ### 086. How do context length and concurrency interact with GPU memory?
 
 **30-second answer:** Long active sequences increase KV-cache/state footprint, reducing how many concurrent sequences fit and potentially forcing queueing or eviction.
 
-**How it works / where it breaks:** The memory budget includes model weights, KV cache, temporary activations, allocator overhead, and runtime buffers. Worst-case planning at advertised maximum context for every user is often infeasible; estimate real input/output length distributions and enforce explicit limits. GQA, quantization, and cache layouts can shift the constraint. [S18](#source-s18)[S19](#source-s19)
+**How it works / where it breaks:** The memory budget includes model weights, KV cache, temporary activations, allocator overhead, and runtime buffers. Worst-case planning at advertised maximum context for every user is often infeasible; estimate real input/output length distributions and enforce explicit limits. GQA, quantization, and cache layouts can shift the constraint. [S18](#source-s18), [S19](#source-s19)
 
 <small>Original Q95</small>
 
 <a id="q087"></a>
+
 ### 087. How should prompt/context budgets be allocated?
 
 **30-second answer:** Reserve space for required instructions, user input, formatting overhead, expected generation, and a safety margin compatible with the specific API and model.
@@ -1115,8 +1207,8 @@ FP32 uses 32 bits, FP16/BF16 16, FP8 8, INT8 8, INT4 4 *per element before metad
 
 ---
 
-
 <a id="chapter-9"></a>
+
 ## Chapter 9 — Performance, economics and engineering choices
 
 A strong Principal-level discussion always connects the mechanism to an operational outcome. “The model is fast” is meaningless without prompt length, output length, concurrency, percentile and quality requirements.
@@ -1134,6 +1226,7 @@ A strong Principal-level discussion always connects the mechanism to an operatio
 **Study check:** Can you explain the chapter’s diagram or comparison without definitions in front of you? Then practice the 10 questions below.
 
 <a id="q088"></a>
+
 ### 088. Which inference metrics matter: TTFT, TPOT, latency or throughput?
 
 **30-second answer:** TTFT measures time until the first streamed token; TPOT/ITL measure subsequent emission pace under a chosen measurement definition; E2E covers the completed response. Throughput (tokens/s) is a different, aggregate metric and can improve even while p95 user latency worsens.
@@ -1147,6 +1240,7 @@ Important metrics include requests/sec, output tokens/sec, TTFT p50/p95/p99, TPO
 <small>Original Q92 + Q93</small>
 
 <a id="q089"></a>
+
 ### 089. What is head-of-line blocking during LLM serving?
 
 **30-second answer:** A long or computationally expensive request can delay short requests if scheduling or shared resources are poorly isolated.
@@ -1156,15 +1250,17 @@ Important metrics include requests/sec, output tokens/sec, TTFT p50/p95/p99, TPO
 <small>Original Q94</small>
 
 <a id="q090"></a>
+
 ### 090. How do you estimate hosted-model inference costs?
 
 **30-second answer:** Estimate actual charges from the provider's *current* usage categories and rates. Distinguish uncached reads, cached reads, any separately billed cache writes/retention, output tokens, and non-token charges rather than assuming one universal three-term formula.
 
-**How it works / where it breaks:** **[Illustrative baseline]** Where a provider charges only for uncached input (`U`), cached-input reads (`C`), and generated output (`O`), with rates per million tokens, `Cost=(U r_u + C r_c + O r_o)/10⁶ + other fees`. **But this is not universal.** Some APIs may separately meter cache creation/retention (`W` with its own rate) or subdivide writes by TTL; then include such categories **exactly once** following billing documentation. `input_tokens` can already include `cached_tokens`; never add the subset to the total again. Use provider usage/accounting fields rather than a guess. [S15](#source-s15)[S32](#source-s32)
+**How it works / where it breaks:** **[Illustrative baseline]** Where a provider charges only for uncached input (`U`), cached-input reads (`C`), and generated output (`O`), with rates per million tokens, `Cost=(U r_u + C r_c + O r_o)/10⁶ + other fees`. **But this is not universal.** Some APIs may separately meter cache creation/retention (`W` with its own rate) or subdivide writes by TTL; then include such categories **exactly once** following billing documentation. `input_tokens` can already include `cached_tokens`; never add the subset to the total again. Use provider usage/accounting fields rather than a guess. [S15](#source-s15), [S32](#source-s32)
 
 <small>Original Q96</small>
 
 <a id="q091"></a>
+
 ### 091. How do you reason about self-hosted inference economics?
 
 **30-second answer:** Compare fully loaded infrastructure and operations cost against effective successfully served workload, not just raw GPU rental divided by theoretical peak tokens/sec.
@@ -1174,6 +1270,7 @@ Important metrics include requests/sec, output tokens/sec, TTFT p50/p95/p99, TPO
 <small>Original Q97</small>
 
 <a id="q092"></a>
+
 ### 092. Hosted API or open-weight self-hosted model?
 
 **30-second answer:** Use a hosted API when managed quality, fast iteration, and minimal serving burden outweigh control constraints; consider open weights when custom deployment, inspectability, predictable volume, or model adaptation justifies operating the stack.
@@ -1183,6 +1280,7 @@ Important metrics include requests/sec, output tokens/sec, TTFT p50/p95/p99, TPO
 <small>Original Q98</small>
 
 <a id="q093"></a>
+
 ### 093. How do you benchmark models fairly for a workload?
 
 **30-second answer:** Compare models on the same task examples, prompts, output constraints, acceptance criteria, and realistic request mix, then measure both quality and serving behavior.
@@ -1192,6 +1290,7 @@ Important metrics include requests/sec, output tokens/sec, TTFT p50/p95/p99, TPO
 <small>Original Q99</small>
 
 <a id="q094"></a>
+
 ### 094. What does streaming improve—and what doesn't it improve?
 
 **30-second answer:** Streaming exposes partial output sooner and often lowers perceived latency; it does not inherently reduce total model compute, billed tokens, or completion latency.
@@ -1201,6 +1300,7 @@ Important metrics include requests/sec, output tokens/sec, TTFT p50/p95/p99, TPO
 <small>Original Q101</small>
 
 <a id="q095"></a>
+
 ### 095. What do timeout, retry, and rate-limit policies need to consider?
 
 **30-second answer:** LLM requests are expensive and can be long-running, so retries need bounded budgets, backoff, and application-level idempotency semantics.
@@ -1210,6 +1310,7 @@ Important metrics include requests/sec, output tokens/sec, TTFT p50/p95/p99, TPO
 <small>Original Q102</small>
 
 <a id="q096"></a>
+
 ### 096. What is model routing and why can it help?
 
 **30-second answer:** Model routing chooses among available models based on workload difficulty, cost, latency, quality requirements, and runtime availability.
@@ -1219,6 +1320,7 @@ Important metrics include requests/sec, output tokens/sec, TTFT p50/p95/p99, TPO
 <small>Original Q103</small>
 
 <a id="q097"></a>
+
 ### 097. What would you monitor in an LLM inference service?
 
 **30-second answer:** Observe user-facing SLOs, token and cache accounting, runtime utilization, model errors, and cost per useful request.
@@ -1230,12 +1332,14 @@ Important metrics include requests/sec, output tokens/sec, TTFT p50/p95/p99, TPO
 ---
 
 <a id="chapter-10"></a>
+
 ## Chapter 10 — Apply the ideas to engineering decisions
 
 These are **case-based practice prompts**, not 11 extra copies of definitions. For each scenario, answer in this order: **(1) state assumptions → (2) isolate mechanism → (3) choose metric/experiment → (4) name a trade-off/rollback**.
 
 <a id="q098"></a>
-### Case 098. Design a low-latency LLM API for a customer-facing product.
+
+### Case 098. Design a low-latency LLM API for a customer-facing product
 
 **Core concepts to reuse:** [Q088](#q088), [Q089](#q089), [Q086](#q086), [Q092](#q092), [Q095](#q095)
 
@@ -1246,6 +1350,7 @@ These are **case-based practice prompts**, not 11 extra copies of definitions. F
 <small>Original Q105; scenario, not a separate new theoretical concept.</small>
 
 <a id="q099"></a>
+
 ### Case 099. You must serve an open-weight model on a constrained GPU. How do you size it?
 
 **Core concepts to reuse:** [Q078](#q078), [Q081](#q081), [Q086](#q086), [Q091](#q091)
@@ -1257,6 +1362,7 @@ These are **case-based practice prompts**, not 11 extra copies of definitions. F
 <small>Original Q106; scenario, not a separate new theoretical concept.</small>
 
 <a id="q100"></a>
+
 ### Case 100. An API accepts a long prompt but answers incorrectly about early context. Why?
 
 **Core concepts to reuse:** [Q074](#q074), [Q075](#q075), [Q087](#q087)
@@ -1268,6 +1374,7 @@ These are **case-based practice prompts**, not 11 extra copies of definitions. F
 <small>Original Q107; scenario, not a separate new theoretical concept.</small>
 
 <a id="q101"></a>
+
 ### Case 101. A model returns malformed JSON despite a strong prompt. What is the fix?
 
 **Core concepts to reuse:** [Q070](#q070), [Q065](#q065)
@@ -1279,6 +1386,7 @@ These are **case-based practice prompts**, not 11 extra copies of definitions. F
 <small>Original Q108; scenario, not a separate new theoretical concept.</small>
 
 <a id="q102"></a>
+
 ### Case 102. How do you diagnose a sudden TTFT regression?
 
 **Core concepts to reuse:** [Q088](#q088), [Q089](#q089), [Q084](#q084), [Q076](#q076)
@@ -1290,17 +1398,19 @@ These are **case-based practice prompts**, not 11 extra copies of definitions. F
 <small>Original Q109; scenario, not a separate new theoretical concept.</small>
 
 <a id="q103"></a>
+
 ### Case 103. How would you justify LoRA versus prompt-only adaptation?
 
 **Core concepts to reuse:** [Q051](#q051), [Q056](#q056), [Q059](#q059)
 
 **Decision in one minute:** Require evidence of stable repeated errors, sufficient high-quality training examples, and a deployment benefit that compensates for maintaining an adapter.
 
-**What to inspect and defend:** Compare fixed prompts/model configurations to adapter training on held-out business cases. Check adverse changes on general skills and unusual inputs. Estimate adapter memory, serving compatibility, update cadence, model-version coupling, and rollback. If simple schema enforcement fixes the task, SFT may be unnecessary. [S09](#source-s09)[S28](#source-s28)
+**What to inspect and defend:** Compare fixed prompts/model configurations to adapter training on held-out business cases. Check adverse changes on general skills and unusual inputs. Estimate adapter memory, serving compatibility, update cadence, model-version coupling, and rollback. If simple schema enforcement fixes the task, SFT may be unnecessary. [S09](#source-s09), [S28](#source-s28)
 
 <small>Original Q110; scenario, not a separate new theoretical concept.</small>
 
 <a id="q104"></a>
+
 ### Case 104. Your product supports Vietnamese, English, and code. What must you verify?
 
 **Core concepts to reuse:** [Q021](#q021), [Q022](#q022), [Q025](#q025), [Q093](#q093)
@@ -1312,6 +1422,7 @@ These are **case-based practice prompts**, not 11 extra copies of definitions. F
 <small>Original Q111; scenario, not a separate new theoretical concept.</small>
 
 <a id="q105"></a>
+
 ### Case 105. How would you choose between a dense model and MoE for production?
 
 **Core concepts to reuse:** [Q072](#q072), [Q091](#q091), [Q093](#q093)
@@ -1323,6 +1434,7 @@ These are **case-based practice prompts**, not 11 extra copies of definitions. F
 <small>Original Q112; scenario, not a separate new theoretical concept.</small>
 
 <a id="q106"></a>
+
 ### Case 106. An inference service has high throughput but poor p95 latency. What do you change?
 
 **Core concepts to reuse:** [Q082](#q082), [Q088](#q088), [Q089](#q089)
@@ -1334,24 +1446,26 @@ These are **case-based practice prompts**, not 11 extra copies of definitions. F
 <small>Original Q113; scenario, not a separate new theoretical concept.</small>
 
 <a id="q107"></a>
+
 ### Case 107. When is prompt-prefix reuse beneficial, and when might it hurt?
 
 **Core concepts to reuse:** [Q084](#q084), [Q086](#q086)
 
 **Decision in one minute:** Prefix caching helps when long **identical token prefixes** are repeated frequently enough to offset cache memory and management overhead.
 
-**What to inspect and defend:** Keep stable instructions before changing content where the provider/engine supports prefix reuse; model, serialization, routing and cache TTL matter. High churn, early changes to prefixes, incompatible cache state, or evictions reduce hits. Do not treat cache reuse as a correctness mechanism or universal billing discount. [S25](#source-s25)[S32](#source-s32)
+**What to inspect and defend:** Keep stable instructions before changing content where the provider/engine supports prefix reuse; model, serialization, routing and cache TTL matter. High churn, early changes to prefixes, incompatible cache state, or evictions reduce hits. Do not treat cache reuse as a correctness mechanism or universal billing discount. [S25](#source-s25), [S32](#source-s32)
 
 <small>Original Q114; scenario, not a separate new theoretical concept.</small>
 
 <a id="q108"></a>
+
 ### Case 108. What if the best-quality hosted model is too expensive at scale?
 
 **Core concepts to reuse:** [Q090](#q090), [Q096](#q096), [Q058](#q058)
 
 **Decision in one minute:** Decompose cost by task and token category, then assess lower-cost model options, input reduction, output length control, caching, routing, and possibly distillation.
 
-**What to inspect and defend:** Build a representative cost distribution, not just the average. **[Illustrative]** A task with 20,000 input tokens and 200 output tokens responds differently to input-price reductions than one with 200 input and 4,000 output tokens. Changing models can reduce price while increasing retries/errors; optimize cost per accepted outcome. Distillation is justified only if repeat volume covers training/maintenance. [S31](#source-s31)[S32](#source-s32)
+**What to inspect and defend:** Build a representative cost distribution, not just the average. **[Illustrative]** A task with 20,000 input tokens and 200 output tokens responds differently to input-price reductions than one with 200 input and 4,000 output tokens. Changing models can reduce price while increasing retries/errors; optimize cost per accepted outcome. Distillation is justified only if repeat volume covers training/maintenance. [S31](#source-s31), [S32](#source-s32)
 
 <small>Original Q115; scenario, not a separate new theoretical concept.</small>
 
@@ -1366,6 +1480,7 @@ This retains the meaning of original Q116 without presenting it as another indep
 ---
 
 <a id="full-inference-walkthrough"></a>
+
 ## Appendix A — A complete request, step by step
 
 This walkthrough illustrates a **standard causal decoder with attention KV caching**, **not** every model architecture or API. All tensor sizes and token IDs are **illustrative**.
@@ -1410,9 +1525,9 @@ Client request: "Explain gradient descent"
 [9] Detokenize / stream text; return finish reason and usage
 ```
 
-## Interpret the timeline (and common pitfalls)
+### Interpret the timeline (and common pitfalls)
 
-1. **Serialization precedes token counting.** Role delimiters, instructions, and modal inputs can affect the true token budget. Count through the correct model/provider path, not raw character length. [S15](#source-s15)[S16](#source-s16)
+1. **Serialization precedes token counting.** Role delimiters, instructions, and modal inputs can affect the true token budget. Count through the correct model/provider path, not raw character length. [S15](#source-s15), [S16](#source-s16)
 2. **Token IDs are integer keys, not vectors.** A learned lookup transforms `[1,4]` IDs into `[1,4,512]` hidden states. Positional treatment is model-specific.
 3. **Prefill computes all prompt positions together.** Causal masking prevents future leakage even though the GPU performs many positions in parallel. The engine stores eligible K/V states for later use (if the cache implementation supports this path).
 4. **The last prompt position predicts the first new token.** During prefill, there are logits at multiple positions; conventional generation chooses the final relevant position.
@@ -1421,7 +1536,7 @@ Client request: "Explain gradient descent"
 7. **Stop and account.** Inspect output-length termination and provider usage; nonvisible generated/reasoning tokens may be billed by some services. A truncated or refused generation is not necessarily a complete application result.
 8. **No training occurs in ordinary inference.** Weights remain fixed; generating more tokens does not update learned parameters. In-context behavior is not an optimizer update.
 
-## Training vs inference: quick comparison
+### Training vs inference: quick comparison
 
 | Dimension | Pretraining / fine-tuning | Standard inference |
 |---|---|---|
@@ -1435,9 +1550,8 @@ Client request: "Explain gradient descent"
 
 ---
 
----
-
 <a id="formula-cheat-sheet"></a>
+
 ## Appendix B — Formula sheet (with assumptions)
 
 Symbols are defined locally; **assumptions matter**. No numbers below are model benchmarks.
@@ -1449,8 +1563,8 @@ Symbols are defined locally; **assumptions matter**. No numbers below are model 
 | Gradient descent | `θ_next = θ − η∇_θ L` | `θ` parameters, `η` step size, `L` loss; plain GD, not exact AdamW formula |
 | MSE | `(1/N)Σ_i (ŷ_i−y_i)²` | `N` count; `y` target; `ŷ` prediction |
 | Cross-entropy for target | `−ln p(target)` | Lower when correct token probability is higher |
-| Chain-rule factorization | `P(x₁…x_T)=∏_t P(x_t|x_<t)` | Identity; chosen model approximates the conditionals |
-| Autoregressive loss | `−(1/N)Σ_t ln p_θ(x_t|x_<t)` | Mask/averaging and dataset sampling are implementation-specific |
+| Chain-rule factorization | `P(x₁…x_T)=∏_t P(x_t\|x_<t)` | Identity; chosen model approximates the conditionals |
+| Autoregressive loss | `−(1/N)Σ_t ln p_θ(x_t\|x_<t)` | Mask/averaging and dataset sampling are implementation-specific |
 | Perplexity | `exp(mean negative log likelihood)` | Must use comparable tokenization/scoring to compare |
 | Softmax | `p_i=e^{z_i}/Σ_j e^{z_j}` | Converts logits `z` to probabilities |
 | Decoding temperature | `p_i(τ)=e^{z_i/τ}/Σ_j e^{z_j/τ}` | Defined for `τ>0`; a provider setting `temperature=0` has implementation-specific semantics |
@@ -1463,8 +1577,6 @@ Symbols are defined locally; **assumptions matter**. No numbers below are model 
 | Raw weight payload | `P × bits_per_weight / 8` bytes | Theoretical packed bits only; not total GPU VRAM |
 
 **Three easy-to-confuse distinctions:** (1) next-token *probability* vs factual confidence; (2) acceptance into a *context window* vs reliable use of all context; (3) reducing *memory capacity* vs improving *compute latency*. Those pairs are related, not equivalent.
-
----
 
 ---
 
@@ -1491,6 +1603,7 @@ flowchart TD
 ---
 
 <a id="question-crosswalk"></a>
+
 ## Appendix D — Full original-to-new question crosswalk
 
 Every original ID is accounted for. Seven closely overlapping pairs are merged; original Q116 becomes the Principal-level answer pattern. Reordered numbers follow the new learning sequence.
@@ -1525,11 +1638,12 @@ Every original ID is accounted for. Seven closely overlapping pairs are merged; 
 | Q26 | [Q034](#q034) | Q55 | [Q052](#q052) | Q84 | [Q079](#q079) | Q113 | [Q106](#q106) |
 | Q27 | [Q035](#q035) | Q56 | [Q053](#q053) | Q85 | [Q080](#q080) | Q114 | [Q107](#q107) |
 | Q28 | [Q036](#q036) | Q57 | [Q052](#q052) *(merged)* | Q86 | [Q081](#q081) | Q115 | [Q108](#q108) |
-| Q29 | [Q037](#q037) | Q58 | [Q054](#q054) | Q87 | [Q081](#q081) *(merged)* | Q116 | [Answer pattern](#chapter-10) |
+| Q29 | [Q037](#q037) | Q58 | [Q054](#q054) | Q87 | [Q081](#q081) *(merged)* | Q116 | [Answer pattern](#principal-level-answer-pattern) |
 
 ---
 
 <a id="editorial-review"></a>
+
 ## Editorial and accuracy review (what changed)
 
 The original guide had **116 question IDs**. No substantial formula or core concept required wholesale rejection. The main repair was pedagogical: reorganize prerequisites first, merge closely overlapping questions, and avoid answering the same theoretical question again in the scenario section. The main accuracy updates are summarized here:
@@ -1557,52 +1671,53 @@ The original guide had **116 question IDs**. No substantial formula or core conc
 ---
 
 <a id="source-bibliography"></a>
+
 ## Appendix E — Sources and verification boundaries
 
 **How to read:** Foundational papers establish a specific research result under the experiments described; official documentation establishes an implementation/API description at the time checked. Neither proves every provider/model uses that design. Links below are primary papers, conference publications, or official project/provider documentation. The bibliography includes foundational references and official documentation. A focused verification of key current provider/inference claims was performed on **23 November 2026**; not every link or implementation detail was re-audited end-to-end. Check the exact provider/model/runtime version before deployment.
 
-## Mathematical foundations, original architectures, and training
+### Mathematical foundations, original architectures, and training
 
-- <a id="source-s01"></a>**[S01]** Vaswani et al. (2017), *Attention Is All You Need*. Transformer, attention equation, multi-head attention, residual blocks and original positional encoding. https://arxiv.org/abs/1706.03762
-- <a id="source-s02"></a>**[S02]** Devlin et al. (2018), *BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding*. Encoder-only and masked-language modeling. https://arxiv.org/abs/1810.04805
-- <a id="source-s03"></a>**[S03]** Raffel et al. (2019/2020), *Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer (T5)*. Encoder–decoder and span-corruption objectives. https://arxiv.org/abs/1910.10683
-- <a id="source-s04"></a>**[S04]** Lewis et al. (2019/2020), *BART: Denoising Sequence-to-Sequence Pre-training*. Alternative denoising pretraining, encoder–decoder architecture. https://arxiv.org/abs/1910.13461
-- <a id="source-s05"></a>**[S05]** Brown et al. (2020), *Language Models are Few-Shot Learners (GPT-3)*. Autoregressive pretraining, language model capabilities and limitations. https://arxiv.org/abs/2005.14165
-- <a id="source-s06"></a>**[S06]** Hoffmann et al. (2022), *Training Compute-Optimal Large Language Models (Chinchilla)*. Empirical compute/data/parameter scaling trade-offs. https://arxiv.org/abs/2203.15556
-- <a id="source-s07"></a>**[S07]** Ouyang et al. (2022), *Training language models to follow instructions with human feedback (InstructGPT)*. SFT, preference modeling, RLHF. https://arxiv.org/abs/2203.02155
-- <a id="source-s08"></a>**[S08]** Rafailov et al. (2023), *Direct Preference Optimization: Your Language Model is Secretly a Reward Model*. DPO objective and comparison with classic RLHF pipelines. https://arxiv.org/abs/2305.18290
+- <a id="source-s01"></a>**[S01]** Vaswani et al. (2017), *Attention Is All You Need*. Transformer, attention equation, multi-head attention, residual blocks and original positional encoding. <https://arxiv.org/abs/1706.03762>
+- <a id="source-s02"></a>**[S02]** Devlin et al. (2018), *BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding*. Encoder-only and masked-language modeling. <https://arxiv.org/abs/1810.04805>
+- <a id="source-s03"></a>**[S03]** Raffel et al. (2019/2020), *Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer (T5)*. Encoder–decoder and span-corruption objectives. <https://arxiv.org/abs/1910.10683>
+- <a id="source-s04"></a>**[S04]** Lewis et al. (2019/2020), *BART: Denoising Sequence-to-Sequence Pre-training*. Alternative denoising pretraining, encoder–decoder architecture. <https://arxiv.org/abs/1910.13461>
+- <a id="source-s05"></a>**[S05]** Brown et al. (2020), *Language Models are Few-Shot Learners (GPT-3)*. Autoregressive pretraining, language model capabilities and limitations. <https://arxiv.org/abs/2005.14165>
+- <a id="source-s06"></a>**[S06]** Hoffmann et al. (2022), *Training Compute-Optimal Large Language Models (Chinchilla)*. Empirical compute/data/parameter scaling trade-offs. <https://arxiv.org/abs/2203.15556>
+- <a id="source-s07"></a>**[S07]** Ouyang et al. (2022), *Training language models to follow instructions with human feedback (InstructGPT)*. SFT, preference modeling, RLHF. <https://arxiv.org/abs/2203.02155>
+- <a id="source-s08"></a>**[S08]** Rafailov et al. (2023), *Direct Preference Optimization: Your Language Model is Secretly a Reward Model*. DPO objective and comparison with classic RLHF pipelines. <https://arxiv.org/abs/2305.18290>
 
-## Architecture details, efficient training, and inference papers
+### Architecture details, efficient training, and inference papers
 
-- <a id="source-s09"></a>**[S09]** Hu et al. (2021/2022), *LoRA: Low-Rank Adaptation of Large Language Models*. Low-rank weight updates. https://arxiv.org/abs/2106.09685
-- <a id="source-s10"></a>**[S10]** Su et al. (2021), *RoFormer: Enhanced Transformer with Rotary Position Embedding*. RoPE mechanism. https://arxiv.org/abs/2104.09864
-- <a id="source-s11"></a>**[S11]** Ainslie et al. (2023), *GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints*. KV head sharing trade-offs. https://arxiv.org/abs/2305.13245
-- <a id="source-s12"></a>**[S12]** Dao et al. (2022), *FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness*. Memory traffic and tiling. https://arxiv.org/abs/2205.14135
-- <a id="source-s13"></a>**[S13]** Zhang & Sennrich (2019), *Root Mean Square Layer Normalization*. RMSNorm vs re-centering normalization. https://arxiv.org/abs/1910.07467
-- <a id="source-s19"></a>**[S19]** Kwon et al. (2023), *Efficient Memory Management for Large Language Model Serving with PagedAttention*. KV paging and vLLM. https://arxiv.org/abs/2309.06180
-- <a id="source-s20"></a>**[S20]** Dettmers et al. (2023), *QLoRA: Efficient Finetuning of Quantized LLMs*. 4-bit frozen base and adapter training. https://arxiv.org/abs/2305.14314
-- <a id="source-s21"></a>**[S21]** Hugging Face Transformers, *Mixtral architecture/model documentation*. Specific sparse-MoE implementation; not universal MoE behavior. https://huggingface.co/docs/transformers/model_doc/mixtral
-- <a id="source-s22"></a>**[S22]** Leviathan et al. (2023), *Fast Inference from Transformers via Speculative Decoding*. Distribution-preserving speculative method under specified conditions. https://proceedings.mlr.press/v202/leviathan23a.html
-- <a id="source-s23"></a>**[S23]** Liu et al. (2023/2024), *Lost in the Middle: How Language Models Use Long Contexts*. Empirical positional behavior on tested tasks/models. https://arxiv.org/abs/2307.03172
-- <a id="source-s29"></a>**[S29]** Guo et al. (2017), *On Calibration of Modern Neural Networks*. Predictive calibration and temperature scaling as a fitted method. https://arxiv.org/abs/1706.04599
-- <a id="source-s31"></a>**[S31]** Hinton, Vinyals & Dean (2015), *Distilling the Knowledge in a Neural Network*. Teacher/student distillation. https://arxiv.org/abs/1503.02531
+- <a id="source-s09"></a>**[S09]** Hu et al. (2021/2022), *LoRA: Low-Rank Adaptation of Large Language Models*. Low-rank weight updates. <https://arxiv.org/abs/2106.09685>
+- <a id="source-s10"></a>**[S10]** Su et al. (2021), *RoFormer: Enhanced Transformer with Rotary Position Embedding*. RoPE mechanism. <https://arxiv.org/abs/2104.09864>
+- <a id="source-s11"></a>**[S11]** Ainslie et al. (2023), *GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints*. KV head sharing trade-offs. <https://arxiv.org/abs/2305.13245>
+- <a id="source-s12"></a>**[S12]** Dao et al. (2022), *FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness*. Memory traffic and tiling. <https://arxiv.org/abs/2205.14135>
+- <a id="source-s13"></a>**[S13]** Zhang & Sennrich (2019), *Root Mean Square Layer Normalization*. RMSNorm vs re-centering normalization. <https://arxiv.org/abs/1910.07467>
+- <a id="source-s19"></a>**[S19]** Kwon et al. (2023), *Efficient Memory Management for Large Language Model Serving with PagedAttention*. KV paging and vLLM. <https://arxiv.org/abs/2309.06180>
+- <a id="source-s20"></a>**[S20]** Dettmers et al. (2023), *QLoRA: Efficient Finetuning of Quantized LLMs*. 4-bit frozen base and adapter training. <https://arxiv.org/abs/2305.14314>
+- <a id="source-s21"></a>**[S21]** Hugging Face Transformers, *Mixtral architecture/model documentation*. Specific sparse-MoE implementation; not universal MoE behavior. <https://huggingface.co/docs/transformers/model_doc/mixtral>
+- <a id="source-s22"></a>**[S22]** Leviathan et al. (2023), *Fast Inference from Transformers via Speculative Decoding*. Distribution-preserving speculative method under specified conditions. <https://proceedings.mlr.press/v202/leviathan23a.html>
+- <a id="source-s23"></a>**[S23]** Liu et al. (2023/2024), *Lost in the Middle: How Language Models Use Long Contexts*. Empirical positional behavior on tested tasks/models. <https://arxiv.org/abs/2307.03172>
+- <a id="source-s29"></a>**[S29]** Guo et al. (2017), *On Calibration of Modern Neural Networks*. Predictive calibration and temperature scaling as a fitted method. <https://arxiv.org/abs/1706.04599>
+- <a id="source-s31"></a>**[S31]** Hinton, Vinyals & Dean (2015), *Distilling the Knowledge in a Neural Network*. Teacher/student distillation. <https://arxiv.org/abs/1503.02531>
 
-## Official implementation and provider documentation
+### Official implementation and provider documentation
 
-- <a id="source-s14"></a>**[S14]** Hugging Face Transformers, *Tokenization algorithms*. BPE, WordPiece, Unigram, SentencePiece distinctions. https://huggingface.co/docs/transformers/main/tokenizer_summary
-- <a id="source-s15"></a>**[S15]** OpenAI API, *Counting tokens*. Model-aware accounting, including API serialization considerations. https://developers.openai.com/api/docs/guides/token-counting
-- <a id="source-s16"></a>**[S16]** Hugging Face Transformers, *Chat templates*. Model-specific roles and serialization. https://huggingface.co/docs/transformers/main/chat_templating
-- <a id="source-s17"></a>**[S17]** Hugging Face Transformers, *Generation configuration*. Decoding parameters and their implementation semantics. https://huggingface.co/docs/transformers/main_classes/text_generation
-- <a id="source-s18"></a>**[S18]** Hugging Face Transformers, *Cache strategies*. Decoder KV-cache variants and trade-offs. https://huggingface.co/docs/transformers/main/kv_cache
-- <a id="source-s24"></a>**[S24]** OpenAI API, *Structured model outputs*. Strict schema constraints, supported schema features, and refusal behavior. https://developers.openai.com/api/docs/guides/structured-outputs
-- <a id="source-s25"></a>**[S25]** vLLM documentation, *Automatic Prefix Caching*. KV reuse across matching prefixes. https://docs.vllm.ai/en/stable/features/automatic_prefix_caching/
-- <a id="source-s26"></a>**[S26]** Hugging Face Transformers, *Quantization overview*. Low-bit deployment techniques and trade-offs. https://huggingface.co/docs/transformers/quantization/overview
-- <a id="source-s27"></a>**[S27]** vLLM, *Benchmark CLI*. Definitions and differences for TTFT, TPOT, ITL, and serving benchmark methodologies. https://docs.vllm.ai/en/stable/benchmarking/cli/
-- <a id="source-s28"></a>**[S28]** Hugging Face Transformers, *Parameter-efficient fine-tuning*. Adapter integration and supported methods. https://huggingface.co/docs/transformers/peft
-- <a id="source-s30"></a>**[S30]** Hugging Face Transformers, *Fine-tune a quantized model*. QLoRA training mechanics and limitations. https://huggingface.co/docs/transformers/quantization/finetune
-- <a id="source-s32"></a>**[S32]** OpenAI API, *Prompt caching*. Model-specific prefix reuse and evolving read/write/retention usage-accounting categories. https://developers.openai.com/api/docs/guides/prompt-caching
+- <a id="source-s14"></a>**[S14]** Hugging Face Transformers, *Tokenization algorithms*. BPE, WordPiece, Unigram, SentencePiece distinctions. <https://huggingface.co/docs/transformers/main/tokenizer_summary>
+- <a id="source-s15"></a>**[S15]** OpenAI API, *Counting tokens*. Model-aware accounting, including API serialization considerations. <https://developers.openai.com/api/docs/guides/token-counting>
+- <a id="source-s16"></a>**[S16]** Hugging Face Transformers, *Chat templates*. Model-specific roles and serialization. <https://huggingface.co/docs/transformers/main/chat_templating>
+- <a id="source-s17"></a>**[S17]** Hugging Face Transformers, *Generation configuration*. Decoding parameters and their implementation semantics. <https://huggingface.co/docs/transformers/main_classes/text_generation>
+- <a id="source-s18"></a>**[S18]** Hugging Face Transformers, *Cache strategies*. Decoder KV-cache variants and trade-offs. <https://huggingface.co/docs/transformers/main/kv_cache>
+- <a id="source-s24"></a>**[S24]** OpenAI API, *Structured model outputs*. Strict schema constraints, supported schema features, and refusal behavior. <https://developers.openai.com/api/docs/guides/structured-outputs>
+- <a id="source-s25"></a>**[S25]** vLLM documentation, *Automatic Prefix Caching*. KV reuse across matching prefixes. <https://docs.vllm.ai/en/stable/features/automatic_prefix_caching/>
+- <a id="source-s26"></a>**[S26]** Hugging Face Transformers, *Quantization overview*. Low-bit deployment techniques and trade-offs. <https://huggingface.co/docs/transformers/quantization/overview>
+- <a id="source-s27"></a>**[S27]** vLLM, *Benchmark CLI*. Definitions and differences for TTFT, TPOT, ITL, and serving benchmark methodologies. <https://docs.vllm.ai/en/stable/benchmarking/cli/>
+- <a id="source-s28"></a>**[S28]** Hugging Face Transformers, *Parameter-efficient fine-tuning*. Adapter integration and supported methods. <https://huggingface.co/docs/transformers/peft>
+- <a id="source-s30"></a>**[S30]** Hugging Face Transformers, *Fine-tune a quantized model*. QLoRA training mechanics and limitations. <https://huggingface.co/docs/transformers/quantization/finetune>
+- <a id="source-s32"></a>**[S32]** OpenAI API, *Prompt caching*. Model-specific prefix reuse and evolving read/write/retention usage-accounting categories. <https://developers.openai.com/api/docs/guides/prompt-caching>
 
-## Verification notes and boundaries
+### Verification notes and boundaries
 
 - **Mathematical identities** (softmax, chain rule, matrix dimensions, loss definitions) are proven by their definitions; cited papers illustrate their deployment in model families rather than being the sole authority for arithmetic.
 - **Empirical claims** (long-context performance, scaling-law fits, efficiency speedups, model-quality trends) are conditional on the experiments and should not be presented as constants or guarantees for future systems.

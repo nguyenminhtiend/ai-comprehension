@@ -1,6 +1,6 @@
 # AI Security & Governance Interview Master Guide
 
-## Basic → Intermediate → Advanced → Production → System Design
+**Basic → Intermediate → Advanced → Production → System Design**
 
 **Target:** Senior AI Engineer / Principal AI Engineer / AI Security Architect  
 **Verified reference date:** 23 November 2026 (Singapore time)  
@@ -20,7 +20,11 @@
 - [Part IV — Production (Q081–Q106)](#part-iv--production-q081q106)
 - [Part V — System Design (Q107–Q120)](#part-v--system-design-and-principal-level-scenarios-q107q120)
 - [Enterprise architecture patterns](#enterprise-architecture-patterns)
+- [Production decision matrices and security checklists](#production-decision-matrices-and-security-checklists)
 - [Production release checklist](#production-release-checklist)
+- [Security regression tests](#security-regression-test-catalogue)
+- [Incident examples](#incident-examples--hypothetical-training-scenarios-not-claims-about-real-incidents)
+- [Interview challenges](#ten-principal-level-interview-challenges-to-practice) and [scoring rubric](#interview-scoring-rubric)
 - [Reference register](#reference-register)
 
 ## How to study this guide
@@ -41,7 +45,7 @@ The **OWASP Top 10 for LLM Applications 2026** identifies: `LLM01 Prompt Injecti
 
 The **OWASP Top 10 for Agentic Applications 2026** categories are `ASI01 Agent Goal Hijack`, `ASI02 Tool Misuse and Exploitation`, `ASI03 Identity and Privilege Abuse`, `ASI04 Agentic Supply Chain Vulnerabilities`, `ASI05 Unexpected Code Execution`, `ASI06 Memory & Context Poisoning`, `ASI07 Insecure Inter-Agent Communication`, `ASI08 Cascading Failures`, `ASI09 Human-Agent Trust Exploitation`, `ASI10 Rogue Agents`. Agent memory is discussed here as persisted *instructions/state*, not as retrieval infrastructure. [S02]
 
-The **MCP protocol revision 2026-07-28** brought changes to the protocol core and authorization flows. Its HTTP authorization specification uses an OAuth-based resource-server model **when authorization is implemented**; MCP authorization is *optional at the protocol level*, not an endorsement of anonymous internal enterprise services. **A2A 1.0.1** specifies enterprise-style authentication and authorization, with scheme advertisement through Agent Cards. Verify compatibility and exact revision across clients and servers. [S03][S04]
+The **MCP protocol revision 2026-07-28** brought changes to the protocol core and authorization flows. Its HTTP authorization specification uses an OAuth-based resource-server model **when authorization is implemented**; MCP authorization is *optional at the protocol level*, not an endorsement of anonymous internal enterprise services. **A2A 1.0.1** specifies enterprise-style authentication and authorization, with scheme advertisement through Agent Cards. Verify compatibility and exact revision across clients and servers. [S03], [S04]
 
 ### Distinguish source type
 
@@ -95,7 +99,7 @@ The **MCP protocol revision 2026-07-28** brought changes to the protocol core an
            AUDIT + TELEMETRY (minimal, protected, retained)
 ```
 
-**Design principle:** Model text is **not a security principal, policy decision, authorization grant, or sufficient audit record**. A gateway and business services validate the real caller and action **independently of the model**. TLS, a private network, an account role, or a system prompt cannot substitute for object-level authorization. [S01][S02][S03]
+**Design principle:** Model text is **not a security principal, policy decision, authorization grant, or sufficient audit record**. A gateway and business services validate the real caller and action **independently of the model**. TLS, a private network, an account role, or a system prompt cannot substitute for object-level authorization. [S01], [S02], [S03]
 
 ### Control types and evidence
 
@@ -114,19 +118,19 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 ---
 
-# Part I — Basic (Q001–Q020)
+## Part I — Basic (Q001–Q020)
 
 ### Q001. What is AI application security, and how is it different from traditional application security?
 
 **Answer.** Traditional controls still matter: authentication, object authorization, input handling, secure dependencies, isolation, and logging. AI adds a probabilistic interpreter that reads untrusted natural language and can propose actions. The critical new failure is **treating lower-trust content as higher-authority instructions**. An untrusted message can influence a model even if every HTTP request is syntactically valid. Therefore, protect both **information flows** and **action execution**. The model may help classify intent, but deterministic controls decide whether a tool can run. **Evidence:** show a policy denial when a model requests an out-of-scope action. **Residual:** incorrect but apparently plausible answers and new language variants may still occur. [S01]
 
-### Q002. Define asset, threat, vulnerability, risk, exploitability, and impact in an LLM system.
+### Q002. Define asset, threat, vulnerability, risk, exploitability, and impact in an LLM system
 
 **Answer.** An **asset** is what must be protected (a patient record); a **threat** is a harmful event (unauthorized disclosure); an **actor** is who may cause it; a **vulnerability** is a weakness (the assistant can call a patient-data tool with a broad service credential); **exploitability** concerns how feasibly the weakness can be triggered; **impact** is resulting harm; **risk** combines likelihood and consequences under the organization's risk methodology. Do not confuse a prompt-injection *attempt* with an actual breach. Record the precise pathway and whether controls stopped the outcome. **Evidence:** scenario-based threat registers and denied cross-tenant attempts, not merely generic vulnerability counts.
 
 ### Q003. What are the main LLM application attack surfaces?
 
-**Answer.** Consider ingress text, prompt templates, model routing, tool specifications, tool results, persisted conversation/agent state, structured outputs, plugins, secrets, code execution, network egress, and external processors. A malicious tool description can be as important as a malicious user message because both enter context. **Boundary:** none of these surfaces should be automatically elevated to an authorized operation. **Control:** explicitly label provenance, restrict tools by task and principal, enforce bounded execution and output handling. **Verify:** trace the provenance of every proposed action and attempt adversarial input at each boundary. [S01][S02]
+**Answer.** Consider ingress text, prompt templates, model routing, tool specifications, tool results, persisted conversation/agent state, structured outputs, plugins, secrets, code execution, network egress, and external processors. A malicious tool description can be as important as a malicious user message because both enter context. **Boundary:** none of these surfaces should be automatically elevated to an authorized operation. **Control:** explicitly label provenance, restrict tools by task and principal, enforce bounded execution and output handling. **Verify:** trace the provenance of every proposed action and attempt adversarial input at each boundary. [S01], [S02]
 
 ### Q004. What is a trust boundary, and where does one exist in an AI assistant?
 
@@ -138,7 +142,7 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 ### Q006. What is indirect prompt injection without involving retrieval?
 
-**Answer.** Indirect injection occurs when lower-trust content **from a tool result, webhook, email body, third-party API response, or A2A message** is written as if it were a command to the assistant. The model might misinterpret that content as authority. The architecture should treat such content as **data**, not as developer instructions, and never let that content grant a tool permission. **Verify:** use a harmless synthetic tool response containing conflicting instructions; the model should continue within the permitted task and the tool policy must still deny unauthorized side effects. [S01][S02]
+**Answer.** Indirect injection occurs when lower-trust content **from a tool result, webhook, email body, third-party API response, or A2A message** is written as if it were a command to the assistant. The model might misinterpret that content as authority. The architecture should treat such content as **data**, not as developer instructions, and never let that content grant a tool permission. **Verify:** use a harmless synthetic tool response containing conflicting instructions; the model should continue within the permitted task and the tool policy must still deny unauthorized side effects. [S01], [S02]
 
 ### Q007. Is an instruction hierarchy sufficient to prevent injection?
 
@@ -158,15 +162,15 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 ### Q011. How do authentication and authorization differ for AI tools?
 
-**Answer.** Authentication establishes who the requester or service is; authorization decides if that identity may perform **this action on this resource now**. For agents, also record *on whose behalf* the operation occurs. A valid service JWT does not imply every patient is in scope. **Controls:** short-lived audience-scoped credentials, execution-time ABAC or domain policy, and separate runtime versus user identity. **Verify:** valid identity + insufficient permission yields a clear denial and an auditable policy decision. [S03][S04]
+**Answer.** Authentication establishes who the requester or service is; authorization decides if that identity may perform **this action on this resource now**. For agents, also record *on whose behalf* the operation occurs. A valid service JWT does not imply every patient is in scope. **Controls:** short-lived audience-scoped credentials, execution-time ABAC or domain policy, and separate runtime versus user identity. **Verify:** valid identity + insufficient permission yields a clear denial and an auditable policy decision. [S03], [S04]
 
-### Q012. Define least privilege for a tool-using agent.
+### Q012. Define least privilege for a tool-using agent
 
 **Answer.** Least privilege applies to **tools discoverable, operations executable, objects accessible, credentials held, outbound destinations, and permitted lifetime**. An appointment assistant might read slots and create a booking, but should not alter diagnosis records or arbitrary accounts. Give each task a limited grant; do not attach a platform-wide role to every worker. **Verify:** an inventory comparison of reachable permissions against use-case approval; negative tests for omitted operations. **Residual:** a legitimate authorized action can still be requested at an inappropriate time, so use business rules and explicit confirmation for consequential operations.
 
 ### Q013. What is sensitive information disclosure in an LLM application?
 
-**Answer.** Disclosure can occur in user-facing responses, prompts to third-party models, tool arguments, traces, error logs, support tickets, or outputs rendered in external systems. The source may be patient data, a secret, a hidden instruction, or private organization data. **Prevention:** classify data at every boundary, minimize payloads, redact where compatible with task semantics, validate recipient authorization, prohibit secrets in prompts. **Detection:** monitor privileged accesses and sensitive-data egress. **Response:** revoke access, preserve minimal evidence, assess breach notification. [S01][S11]
+**Answer.** Disclosure can occur in user-facing responses, prompts to third-party models, tool arguments, traces, error logs, support tickets, or outputs rendered in external systems. The source may be patient data, a secret, a hidden instruction, or private organization data. **Prevention:** classify data at every boundary, minimize payloads, redact where compatible with task semantics, validate recipient authorization, prohibit secrets in prompts. **Detection:** monitor privileged accesses and sensitive-data egress. **Response:** revoke access, preserve minimal evidence, assess breach notification. [S01], [S11]
 
 ### Q014. Is a system prompt a secure place to store API keys or secrets?
 
@@ -174,7 +178,7 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 ### Q015. What does defense in depth mean for prompt injection?
 
-**Answer.** It means assuming that one layer will sometimes fail. Use task-scoped instructions and content provenance **plus** strict tool registry, input schema validation, per-call authorization, constrained egress, secret isolation, action approval, anomaly monitoring, and tested incident response. A prompt filter might reduce suspicious requests but cannot prove safety. **Residual:** a model may still choose harmful but ostensibly allowed actions, requiring purpose checks, quotas, and reviews. **Proof:** demonstrate the same forbidden objective is blocked by an independent downstream control if the prompt layer fails. [S01][S02]
+**Answer.** It means assuming that one layer will sometimes fail. Use task-scoped instructions and content provenance **plus** strict tool registry, input schema validation, per-call authorization, constrained egress, secret isolation, action approval, anomaly monitoring, and tested incident response. A prompt filter might reduce suspicious requests but cannot prove safety. **Residual:** a model may still choose harmful but ostensibly allowed actions, requiring purpose checks, quotas, and reviews. **Proof:** demonstrate the same forbidden objective is blocked by an independent downstream control if the prompt layer fails. [S01], [S02]
 
 ### Q016. What is output handling risk?
 
@@ -190,18 +194,19 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 ### Q019. How do you prioritize AI security risks?
 
-**Answer.** Prioritize by sensitivity and blast radius: patient harm or unauthorized record exposure usually outranks a benign answer-format violation. Consider probability, reachability, attacker control, autonomy, downstream permissions, ability to detect, recovery time, and applicable legal/contract consequences. Use a **risk-based**, not a purely model-score-based, ranking. **Verify:** each high risk has a tested control and owner, and exceptions have time-bound approval. Do not infer risk solely from OWASP category rank or a vendor benchmark percentage. [S01][S05]
+**Answer.** Prioritize by sensitivity and blast radius: patient harm or unauthorized record exposure usually outranks a benign answer-format violation. Consider probability, reachability, attacker control, autonomy, downstream permissions, ability to detect, recovery time, and applicable legal/contract consequences. Use a **risk-based**, not a purely model-score-based, ranking. **Verify:** each high risk has a tested control and owner, and exceptions have time-bound approval. Do not infer risk solely from OWASP category rank or a vendor benchmark percentage. [S01], [S05]
 
 ### Q020. What would convince you an AI feature is secure enough to launch?
 
 **Answer.** There is no proof of absolute safety. I would demand a defined use case and data classification; approved threat model; authenticated, scoped tools; fail-closed object authorization; relevant privacy and transfer assessments; meaningful adversarial tests; documented residual risks; prepared responders; and a rollback/kill switch. For high-impact healthcare uses, include clinical owner and suitable human oversight. **Go/no-go evidence:** signed risk decision with known failures and controls, test artifacts, vendor terms, and production alert routes—not a declaration that the prompt is 'safe'.
 
 ---
-# Part II — Intermediate (Q021–Q050)
+
+## Part II — Intermediate (Q021–Q050)
 
 ### Q021. How can tool-output manipulation compromise an agent?
 
-**Answer.** A tool's reply is external data, even when the tool was legitimately invoked. An attacker or compromised upstream provider can place an instruction-like string in a status field, note, or error message. If the orchestrator appends that text as trusted guidance, the model may change course. **Controls:** supply provenance and typed response contracts; avoid concatenating tool text into high-priority instructions; permit tools to return facts, not new privileges; enforce a downstream policy gate. **Verification:** synthetic poisoned status and error fields should not lead to unauthorized tool calls. **Residual:** legitimate tool data can still bias the answer without causing a prohibited call. [S01][S02]
+**Answer.** A tool's reply is external data, even when the tool was legitimately invoked. An attacker or compromised upstream provider can place an instruction-like string in a status field, note, or error message. If the orchestrator appends that text as trusted guidance, the model may change course. **Controls:** supply provenance and typed response contracts; avoid concatenating tool text into high-priority instructions; permit tools to return facts, not new privileges; enforce a downstream policy gate. **Verification:** synthetic poisoned status and error fields should not lead to unauthorized tool calls. **Residual:** legitimate tool data can still bias the answer without causing a prohibited call. [S01], [S02]
 
 ### Q022. How should you design a secure tool registry?
 
@@ -221,7 +226,7 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 ### Q026. What is privilege escalation in an agent workflow?
 
-**Answer.** Escalation occurs when an agent obtains capabilities beyond its authorized role, perhaps by abusing a shared service token, invoking an administrative MCP tool, or crossing a tenant boundary. Distinguish **model influence** from actual **privilege escalation**: a model asking for admin access is only a proposal until an executor grants it. **Controls:** separate runtime identities, prohibit token forwarding to unrelated audiences, per-call policy, credential rotation, break-glass process. **Evidence:** trace shows denied scope and auditable issuer/audience validation; no elevated side effect. [S02][S03]
+**Answer.** Escalation occurs when an agent obtains capabilities beyond its authorized role, perhaps by abusing a shared service token, invoking an administrative MCP tool, or crossing a tenant boundary. Distinguish **model influence** from actual **privilege escalation**: a model asking for admin access is only a proposal until an executor grants it. **Controls:** separate runtime identities, prohibit token forwarding to unrelated audiences, per-call policy, credential rotation, break-glass process. **Evidence:** trace shows denied scope and auditable issuer/audience validation; no elevated side effect. [S02], [S03]
 
 ### Q027. How do you handle read-only versus write-capable tools?
 
@@ -265,11 +270,11 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 ### Q037. How would you secure MCP tool descriptions and server discovery?
 
-**Answer.** Tool descriptions influence what the model decides to call, so they are an instruction-like attack surface. Allowlist trusted MCP servers, record package/source provenance, review tools and schema diffs, freeze or approve capability sets, and prevent unreviewed servers from registering privileged tools. **At runtime:** use a registry policy independently of descriptions and check each invocation. **Verify:** renaming or adding a dangerous tool cannot bypass approval; replacement server identity or signing key changes trigger review. **Residual:** even a vetted tool can later become compromised. [S02][S03]
+**Answer.** Tool descriptions influence what the model decides to call, so they are an instruction-like attack surface. Allowlist trusted MCP servers, record package/source provenance, review tools and schema diffs, freeze or approve capability sets, and prevent unreviewed servers from registering privileged tools. **At runtime:** use a registry policy independently of descriptions and check each invocation. **Verify:** renaming or adding a dangerous tool cannot bypass approval; replacement server identity or signing key changes trigger review. **Residual:** even a vetted tool can later become compromised. [S02], [S03]
 
 ### Q038. What is A2A and what additional security problem does it introduce?
 
-**Answer.** A2A provides conventions for agents or agent applications to communicate as services. Every agent boundary introduces remote identity, authorization, data disclosure, task ownership, and inter-agent content integrity concerns. Agent messages are **not trusted instructions simply because another agent authored them**. Authenticate peers; authorize each resource/task; protect task histories, artifacts, and callbacks; and bind delegated work to a known principal and purpose. **Verify:** an authenticated but unrelated agent cannot enumerate or cancel another caller's tasks. [S04][S02]
+**Answer.** A2A provides conventions for agents or agent applications to communicate as services. Every agent boundary introduces remote identity, authorization, data disclosure, task ownership, and inter-agent content integrity concerns. Agent messages are **not trusted instructions simply because another agent authored them**. Authenticate peers; authorize each resource/task; protect task histories, artifacts, and callbacks; and bind delegated work to a known principal and purpose. **Verify:** an authenticated but unrelated agent cannot enumerate or cancel another caller's tasks. [S04], [S02]
 
 ### Q039. How should A2A Agent Cards be trusted?
 
@@ -281,19 +286,19 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 ### Q041. How do you prevent a cross-agent confused deputy?
 
-**Answer.** A receiving agent must not execute with broader privileges merely because the calling agent is trusted. Require authentic caller identity, signed or securely bound delegated authority where appropriate, audience and task binding, tenant/resource authorization, and anti-replay protections. Do not trust the calling agent's natural-language claim “the user approved this.” **Test:** an approved agent sends a task for a resource outside its delegation; the receiver denies it. **Residual:** a sufficiently broad policy can still authorize unintended outcomes and needs regular review. [S02][S04]
+**Answer.** A receiving agent must not execute with broader privileges merely because the calling agent is trusted. Require authentic caller identity, signed or securely bound delegated authority where appropriate, audience and task binding, tenant/resource authorization, and anti-replay protections. Do not trust the calling agent's natural-language claim “the user approved this.” **Test:** an approved agent sends a task for a resource outside its delegation; the receiver denies it. **Residual:** a sufficiently broad policy can still authorize unintended outcomes and needs regular review. [S02], [S04]
 
 ### Q042. When would you use mTLS versus OAuth for agent communication?
 
-**Answer.** They solve different problems. **mTLS** authenticates service endpoints and protects the transport, useful for workload-to-workload trust. **OAuth-style access tokens** carry authorization context such as audience, scope, and sometimes delegated user identity. A sensitive enterprise design may use both. Neither substitutes for patient/tenant object authorization. **Verification:** incorrect client certificate fails service authentication; valid certificate with insufficient token scope fails operation authorization. Match requirements to protocol version, mesh, and identity provider rather than assuming every SDK supplies them automatically. [S03][S04]
+**Answer.** They solve different problems. **mTLS** authenticates service endpoints and protects the transport, useful for workload-to-workload trust. **OAuth-style access tokens** carry authorization context such as audience, scope, and sometimes delegated user identity. A sensitive enterprise design may use both. Neither substitutes for patient/tenant object authorization. **Verification:** incorrect client certificate fails service authentication; valid certificate with insufficient token scope fails operation authorization. Match requirements to protocol version, mesh, and identity provider rather than assuming every SDK supplies them automatically. [S03], [S04]
 
 ### Q043. What are common AI data classes and why classify them before a model call?
 
 **Answer.** At minimum distinguish public, internal, confidential, secrets, personal data, health/clinical data, financial data, and regulated/contract-restricted data. Categories may overlap; health information remains sensitive even without a name attached if re-identification is possible. Classification drives model routing, masking, approval, retention, monitoring, and who can see the response. **Verify:** disallowed classes cannot reach an unapproved model or observability vendor and that classifiers are evaluated for false negatives. **Residual:** data classification errors require conservative defaults and audit samples.
 
-### Q044. Define PII, PHI, and personal data without conflating them.
+### Q044. Define PII, PHI, and personal data without conflating them
 
-**Answer.** **PII** is a broad privacy/security term for information linked or linkable to a person; definitions vary by framework. **PHI** is a term with a specific meaning under applicable US HIPAA rules. **Singapore PDPA personal data** concerns individuals identifiable from the data alone or with other information the organization has or is likely to access, subject to statutory context and exceptions. A Singapore clinical record is not automatically HIPAA PHI just because it is medical. **Design:** classify by the actually applicable law, contracts, and identifiability, not by an informal label. [S09][S10][S16]
+**Answer.** **PII** is a broad privacy/security term for information linked or linkable to a person; definitions vary by framework. **PHI** is a term with a specific meaning under applicable US HIPAA rules. **Singapore PDPA personal data** concerns individuals identifiable from the data alone or with other information the organization has or is likely to access, subject to statutory context and exceptions. A Singapore clinical record is not automatically HIPAA PHI just because it is medical. **Design:** classify by the actually applicable law, contracts, and identifiability, not by an informal label. [S09], [S10], [S16]
 
 ### Q045. What is data minimization for LLM inference?
 
@@ -301,11 +306,11 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 ### Q046. What is the difference between redaction, pseudonymization, de-identification, and anonymization?
 
-**Answer.** **Redaction** removes or obscures selected fields. **Pseudonymization** replaces identifiers while retaining a way to reconnect records, directly or via other data. **De-identification** is a broad set of techniques whose legal sufficiency depends on context. **Anonymization** requires a stronger assessment of whether re-identification remains a serious possibility; under PDPC guidance, genuinely anonymized data can fall outside PDPA personal-data scope. Removal of name/NRIC alone is often insufficient for rare clinical attributes. **Verification:** motivated-intruder or re-identification assessment using likely auxiliary information. [S10][S11][S13]
+**Answer.** **Redaction** removes or obscures selected fields. **Pseudonymization** replaces identifiers while retaining a way to reconnect records, directly or via other data. **De-identification** is a broad set of techniques whose legal sufficiency depends on context. **Anonymization** requires a stronger assessment of whether re-identification remains a serious possibility; under PDPC guidance, genuinely anonymized data can fall outside PDPA personal-data scope. Removal of name/NRIC alone is often insufficient for rare clinical attributes. **Verification:** motivated-intruder or re-identification assessment using likely auxiliary information. [S10], [S11], [S13]
 
 ### Q047. Why does removing `patientId` from Langfuse or tracing logs not automatically make them anonymous?
 
-**Answer.** The trace may retain exact dates, measurements, rare diagnoses, clinic location, message context, or stable pseudonyms. Combined with other accessible information, these can identify a patient. A random run ID may also enable linkage. **Controls:** field allowlisting, structured redaction, separation of identifiers, truncation, limited access and retention, region/processor approval, and no raw prompt content unless justified. **Verification:** inspect real traces under restricted conditions and conduct a contextual re-identification assessment. **Residual:** imperfect detectors and contextual uniqueness still create privacy risk. [S10][S11]
+**Answer.** The trace may retain exact dates, measurements, rare diagnoses, clinic location, message context, or stable pseudonyms. Combined with other accessible information, these can identify a patient. A random run ID may also enable linkage. **Controls:** field allowlisting, structured redaction, separation of identifiers, truncation, limited access and retention, region/processor approval, and no raw prompt content unless justified. **Verification:** inspect real traces under restricted conditions and conduct a contextual re-identification assessment. **Residual:** imperfect detectors and contextual uniqueness still create privacy risk. [S10], [S11]
 
 ### Q048. How should prompt and completion logs be designed for healthcare?
 
@@ -317,22 +322,23 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 ### Q050. Why are data residency, sovereignty, and privacy compliance different questions?
 
-**Answer.** **Residency** concerns where data is stored or processed; **sovereignty** concerns legal jurisdiction and control; **compliance** concerns all applicable purposes, safeguards, transfers, contracts, retention, access, and accountability. A Singapore database does not prove inference, backups, abuse logs, human support, or telemetry remain in Singapore. Conversely, PDPA does not impose a blanket requirement to host all personal data only in Singapore: its transfer restrictions may allow suitably protected overseas transfers. **Verify:** complete data-flow and subprocessor inventory, precise service behavior, contractual terms, and applicable legal assessment. [S09][S10]
+**Answer.** **Residency** concerns where data is stored or processed; **sovereignty** concerns legal jurisdiction and control; **compliance** concerns all applicable purposes, safeguards, transfers, contracts, retention, access, and accountability. A Singapore database does not prove inference, backups, abuse logs, human support, or telemetry remain in Singapore. Conversely, PDPA does not impose a blanket requirement to host all personal data only in Singapore: its transfer restrictions may allow suitably protected overseas transfers. **Verify:** complete data-flow and subprocessor inventory, precise service behavior, contractual terms, and applicable legal assessment. [S09], [S10]
 
 ---
-# Part III — Advanced (Q051–Q080)
+
+## Part III — Advanced (Q051–Q080)
 
 ### Q051. When does Singapore's PDPA apply to a GenAI assistant?
 
-**Answer.** The PDPA governs relevant collection, use, disclosure, protection, retention, and transfers of **personal data by organizations** within its scope, subject to the statute's definitions and exceptions. Calling an LLM does not change the character of data processing. Identify whether the provider, customer organization, and subcontractors are organizations or data intermediaries and map what each does. **Engineering action:** document personal-data purpose and flows from user request through inference, telemetry, support, and deletion. **Legal precision:** PDPC's AI-specific advisory guidelines are **non-binding guidance**; the underlying PDPA and regulations remain law. [S09][S10][S11]
+**Answer.** The PDPA governs relevant collection, use, disclosure, protection, retention, and transfers of **personal data by organizations** within its scope, subject to the statute's definitions and exceptions. Calling an LLM does not change the character of data processing. Identify whether the provider, customer organization, and subcontractors are organizations or data intermediaries and map what each does. **Engineering action:** document personal-data purpose and flows from user request through inference, telemetry, support, and deletion. **Legal precision:** PDPC's AI-specific advisory guidelines are **non-binding guidance**; the underlying PDPA and regulations remain law. [S09], [S10], [S11]
 
 ### Q052. Does consent always have to be collected separately for every AI use?
 
-**Answer.** Not necessarily. PDPA consent and notification obligations depend on the **specific purpose and legal basis**; relevant deemed-consent provisions or statutory exceptions may apply if their conditions are met. The PDPC AI advisory discusses business-improvement, research, and other exceptions in defined contexts; it is **not a blanket permission** to train models on patients' records. **Process:** obtain a privacy/legal determination for each purpose (inference, evaluation, model improvement, analytics), document notification/consent or the exception relied upon, and re-evaluate materially new purposes. **Verify:** no engineering flag labeled `ai_allowed=true` substitutes for a defensible legal analysis. [S09][S11]
+**Answer.** Not necessarily. PDPA consent and notification obligations depend on the **specific purpose and legal basis**; relevant deemed-consent provisions or statutory exceptions may apply if their conditions are met. The PDPC AI advisory discusses business-improvement, research, and other exceptions in defined contexts; it is **not a blanket permission** to train models on patients' records. **Process:** obtain a privacy/legal determination for each purpose (inference, evaluation, model improvement, analytics), document notification/consent or the exception relied upon, and re-evaluate materially new purposes. **Verify:** no engineering flag labeled `ai_allowed=true` substitutes for a defensible legal analysis. [S09], [S11]
 
 ### Q053. What is Singapore's Transfer Limitation Obligation?
 
-**Answer.** Under PDPA and the Personal Data Protection Regulations, an organization generally must ensure overseas personal-data recipients provide a **standard of protection comparable to PDPA**, subject to the statutory rules and exceptions. Mechanisms may include legally enforceable obligations (such as suitable contracts or binding corporate rules) or prescribed certifications under applicable conditions. **Not true:** “PDPA requires every patient byte to remain in Singapore,” or “signing any DPA automatically fixes all transfer issues.” **Verify:** recipients, countries, onward transfers, protections, and allowed uses. Use the actual regulations and PDPC Key Concepts guidance; obtain legal review for exceptions. [S09][S10]
+**Answer.** Under PDPA and the Personal Data Protection Regulations, an organization generally must ensure overseas personal-data recipients provide a **standard of protection comparable to PDPA**, subject to the statutory rules and exceptions. Mechanisms may include legally enforceable obligations (such as suitable contracts or binding corporate rules) or prescribed certifications under applicable conditions. **Not true:** “PDPA requires every patient byte to remain in Singapore,” or “signing any DPA automatically fixes all transfer issues.” **Verify:** recipients, countries, onward transfers, protections, and allowed uses. Use the actual regulations and PDPC Key Concepts guidance; obtain legal review for exceptions. [S09], [S10]
 
 ### Q054. Is a Singapore inference endpoint proof that all processing stays in Singapore?
 
@@ -340,19 +346,19 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 ### Q055. How do you assess a US-based observability service receiving Singapore clinical traces?
 
-**Answer.** First determine what trace fields can identify an individual; pseudonymization and simple identifier removal may not be enough. Then enumerate processing countries, service providers, retention, training/secondary uses, access controls, onward transfers, and transfer arrangements. Consider whether minimization or deployment of a regional/self-hosted collector can meet the need better. **Decision:** block raw clinical tracing until privacy/legal review and controls are approved; prefer metadata-only traces. **Verify:** sampled payloads and contract/data-flow evidence, not solely a vendor security badge. [S10][S11]
+**Answer.** First determine what trace fields can identify an individual; pseudonymization and simple identifier removal may not be enough. Then enumerate processing countries, service providers, retention, training/secondary uses, access controls, onward transfers, and transfer arrangements. Consider whether minimization or deployment of a regional/self-hosted collector can meet the need better. **Decision:** block raw clinical tracing until privacy/legal review and controls are approved; prefer metadata-only traces. **Verify:** sampled payloads and contract/data-flow evidence, not solely a vendor security badge. [S10], [S11]
 
 ### Q056. Is anonymized health data outside Singapore PDPA?
 
-**Answer.** Data effectively anonymized so individuals are not identifiable may fall outside PDPA's personal-data definition, but the threshold is contextual. PDPC discusses whether there is **no serious possibility of re-identification**, considering reversibility, recipients, auxiliary information, and protections. Merely removing direct identifiers or calling data “anonymous” is inadequate. **Design review:** establish how identifiability was assessed and re-assess when sharing scope or external data availability changes. **Residual:** a motivated actor may combine seemingly innocuous clinical facts to identify someone. [S10][S11][S13]
+**Answer.** Data effectively anonymized so individuals are not identifiable may fall outside PDPA's personal-data definition, but the threshold is contextual. PDPC discusses whether there is **no serious possibility of re-identification**, considering reversibility, recipients, auxiliary information, and protections. Merely removing direct identifiers or calling data “anonymous” is inadequate. **Design review:** establish how identifiability was assessed and re-assess when sharing scope or external data availability changes. **Residual:** a motivated actor may combine seemingly innocuous clinical facts to identify someone. [S10], [S11], [S13]
 
 ### Q057. What is the PDPA Protection Obligation and how does it affect AI?
 
-**Answer.** Section 24 requires organizations to make **reasonable security arrangements** to protect personal data against relevant risks; it does not prescribe one AI-specific cloud architecture. An LLM workflow must therefore address identity, tenant isolation, model/tool permissions, encryption, processor access, telemetry, incident response, and other reasonably foreseeable exposures. **Verification:** risk-proportionate control evidence, testing, and documented exceptions. **Do not claim:** ISO certification or a regional model endpoint conclusively discharges section 24. PDPC's AI advisory explicitly references section 24 in development environments. [S09][S11]
+**Answer.** Section 24 requires organizations to make **reasonable security arrangements** to protect personal data against relevant risks; it does not prescribe one AI-specific cloud architecture. An LLM workflow must therefore address identity, tenant isolation, model/tool permissions, encryption, processor access, telemetry, incident response, and other reasonably foreseeable exposures. **Verification:** risk-proportionate control evidence, testing, and documented exceptions. **Do not claim:** ISO certification or a regional model endpoint conclusively discharges section 24. PDPC's AI advisory explicitly references section 24 in development environments. [S09], [S11]
 
 ### Q058. What is Singapore's Retention Limitation Obligation in this context?
 
-**Answer.** Organizations should cease retaining personal data or remove means of association when retaining it no longer serves the purposes for which it was collected and is no longer necessary for legal/business purposes, subject to applicable obligations. A permanent prompt archive “for debugging someday” needs a defensible rationale. **Design:** purpose-specific TTLs for conversations, tool payloads, metrics, support exports, and audit events; separate retention for indispensable security evidence. **Verify:** deletion jobs, backup lifecycle, legal holds, and vendor deletion attestations. Avoid universal retention periods not grounded in specific law or agreements. [S09][S10]
+**Answer.** Organizations should cease retaining personal data or remove means of association when retaining it no longer serves the purposes for which it was collected and is no longer necessary for legal/business purposes, subject to applicable obligations. A permanent prompt archive “for debugging someday” needs a defensible rationale. **Design:** purpose-specific TTLs for conversations, tool payloads, metrics, support exports, and audit events; separate retention for indispensable security evidence. **Verify:** deletion jobs, backup lifecycle, legal holds, and vendor deletion attestations. Avoid universal retention periods not grounded in specific law or agreements. [S09], [S10]
 
 ### Q059. What must a Singapore organization do after a potentially notifiable personal-data breach?
 
@@ -384,11 +390,11 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 ### Q066. How do you evaluate AI supply-chain security?
 
-**Answer.** Inventory model provenance, model weights/licenses, container images, package dependencies, prompts and tool templates, MCP servers, runtime plugins, CI artifacts, and hosted vendor integrations. Review malicious updates, tampering, unreviewed permissions, and compromised delivery paths. **Controls:** pin immutable versions/digests, scan and review dependencies, use trusted build pipelines and provenance, require approval before new tool capabilities, and run runtime isolation. **Verify:** an unexpected package, image digest, model revision, or tool schema triggers a blocked deployment or review. [S01][S02]
+**Answer.** Inventory model provenance, model weights/licenses, container images, package dependencies, prompts and tool templates, MCP servers, runtime plugins, CI artifacts, and hosted vendor integrations. Review malicious updates, tampering, unreviewed permissions, and compromised delivery paths. **Controls:** pin immutable versions/digests, scan and review dependencies, use trusted build pipelines and provenance, require approval before new tool capabilities, and run runtime isolation. **Verify:** an unexpected package, image digest, model revision, or tool schema triggers a blocked deployment or review. [S01], [S02]
 
 ### Q067. What is model or data poisoning, and how is it distinct from prompt injection?
 
-**Answer.** Poisoning targets **training, fine-tuning, evaluation, or persistent state/data** so the model/system behavior changes beyond a single untrusted message. Prompt injection targets the model's behavior **at use time** through instruction-like content. In this guide we discuss poisoning of **model artifacts and agent state**, not retrieval datasets. **Controls:** provenance, role-restricted updates, integrity checks, dataset review, approval and versioning, and comparative tests. **Verify:** unauthorized modifications cannot become an approved model or persistent instruction. [S01][S02]
+**Answer.** Poisoning targets **training, fine-tuning, evaluation, or persistent state/data** so the model/system behavior changes beyond a single untrusted message. Prompt injection targets the model's behavior **at use time** through instruction-like content. In this guide we discuss poisoning of **model artifacts and agent state**, not retrieval datasets. **Controls:** provenance, role-restricted updates, integrity checks, dataset review, approval and versioning, and comparative tests. **Verify:** unauthorized modifications cannot become an approved model or persistent instruction. [S01], [S02]
 
 ### Q068. What is agent memory poisoning when no retrieval system is involved?
 
@@ -396,7 +402,7 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 ### Q069. What are realistic limitations of prompt firewalls and LLM guardrails?
 
-**Answer.** They can detect patterns, classify risk, and reduce known attacks, but they are probabilistic, context-sensitive, and prone to false positives/negatives. They can also be bypassed by benign-looking variants. **Do not** treat a moderation score as identity, permission, data-classification truth, or a substitute for egress restrictions. Measure attack success against the **protected outcome**, not merely whether the classifier flags the text. **Verify:** adaptive regression suites, human-reviewed samples, shadow evaluation, and monitoring for drift. [S01][S05]
+**Answer.** They can detect patterns, classify risk, and reduce known attacks, but they are probabilistic, context-sensitive, and prone to false positives/negatives. They can also be bypassed by benign-looking variants. **Do not** treat a moderation score as identity, permission, data-classification truth, or a substitute for egress restrictions. Measure attack success against the **protected outcome**, not merely whether the classifier flags the text. **Verify:** adaptive regression suites, human-reviewed samples, shadow evaluation, and monitoring for drift. [S01], [S05]
 
 ### Q070. How do you secure dynamically generated tool arguments?
 
@@ -424,15 +430,15 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 ### Q076. How would you model risk in NIST AI RMF versus OWASP?
 
-**Answer.** **OWASP** provides security risk categories and attack-oriented guidance. **NIST AI RMF 1.0 (2023)** provides voluntary governance and risk-management functions **GOVERN, MAP, MEASURE, MANAGE**. **NIST AI 600-1 (2024)** is a GenAI companion profile, not a law or security certificate. **Application:** map an OWASP scenario to an asset, business impact, measurement, mitigation, owner, and monitoring plan. **Verify:** a risk register links concrete tests/evidence to governance decisions instead of merely listing framework names. [S01][S02][S05][S06]
+**Answer.** **OWASP** provides security risk categories and attack-oriented guidance. **NIST AI RMF 1.0 (2023)** provides voluntary governance and risk-management functions **GOVERN, MAP, MEASURE, MANAGE**. **NIST AI 600-1 (2024)** is a GenAI companion profile, not a law or security certificate. **Application:** map an OWASP scenario to an asset, business impact, measurement, mitigation, owner, and monitoring plan. **Verify:** a risk register links concrete tests/evidence to governance decisions instead of merely listing framework names. [S01], [S02], [S05], [S06]
 
 ### Q077. What is ISO/IEC 42001, and what does certification mean?
 
-**Answer.** **ISO/IEC 42001:2023** specifies requirements for an organizational **AI management system** (AIMS): scope, policy, leadership, processes, controls, and continual improvement. Certification can offer third-party assurance **within its defined scope**, but it does not certify that each model output is accurate, every tool is immune to injection, every data transfer is lawful, or HIPAA/PDPA compliance is automatic. **Verify:** certificate scope, legal entity, audit body, current validity, and evidence for the actual workload. **Complement:** ISO/IEC 23894:2023 is AI risk-management guidance. [S07][S08]
+**Answer.** **ISO/IEC 42001:2023** specifies requirements for an organizational **AI management system** (AIMS): scope, policy, leadership, processes, controls, and continual improvement. Certification can offer third-party assurance **within its defined scope**, but it does not certify that each model output is accurate, every tool is immune to injection, every data transfer is lawful, or HIPAA/PDPA compliance is automatic. **Verify:** certificate scope, legal entity, audit body, current validity, and evidence for the actual workload. **Complement:** ISO/IEC 23894:2023 is AI risk-management guidance. [S07], [S08]
 
 ### Q078. What can Singapore's IMDA AI governance frameworks add to an enterprise program?
 
-**Answer.** Singapore published a Model AI Governance Framework for Generative AI (2024) and **Model AI Governance Framework for Agentic AI, v1.0, 22 January 2026**. These are useful **policy and engineering guidance**, not automatic binding laws. Apply their governance themes to autonomy boundaries, human responsibility, transparency, risk-based safeguards, testing, and accountability. **Verification:** show an enterprise adoption matrix matching framework themes to procedures and technical controls. **Do not** cite a governance framework as if it creates a PDPA exemption. [S14][S15]
+**Answer.** Singapore published a Model AI Governance Framework for Generative AI (2024) and **Model AI Governance Framework for Agentic AI, v1.0, 22 January 2026**. These are useful **policy and engineering guidance**, not automatic binding laws. Apply their governance themes to autonomy boundaries, human responsibility, transparency, risk-based safeguards, testing, and accountability. **Verification:** show an enterprise adoption matrix matching framework themes to procedures and technical controls. **Do not** cite a governance framework as if it creates a PDPA exemption. [S14], [S15]
 
 ### Q079. What is an AI system inventory and what must it contain?
 
@@ -440,14 +446,15 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 ### Q080. How do you design AI lifecycle governance without slowing every low-risk change?
 
-**Answer.** Tier workflows by **data sensitivity, external effects, autonomy, and harm**. A low-risk internal drafting feature may follow standard CI; a patient-affecting tool requires specialist review and domain sign-off. Use lightweight templates plus automated evidence collection. Require re-review when model/provider, permissions, geography, data purpose, tools, or user group materially changes. **Governance controls:** named owners, time-boxed exceptions, release gates, review cadence, and retirement/erase plans. **Verify:** the release system can demonstrate who approved what version and why. [S05][S07][S15]
+**Answer.** Tier workflows by **data sensitivity, external effects, autonomy, and harm**. A low-risk internal drafting feature may follow standard CI; a patient-affecting tool requires specialist review and domain sign-off. Use lightweight templates plus automated evidence collection. Require re-review when model/provider, permissions, geography, data purpose, tools, or user group materially changes. **Governance controls:** named owners, time-boxed exceptions, release gates, review cadence, and retirement/erase plans. **Verify:** the release system can demonstrate who approved what version and why. [S05], [S07], [S15]
 
 ---
-# Part IV — Production (Q081–Q106)
+
+## Part IV — Production (Q081–Q106)
 
 ### Q081. What does a production AI security review require beyond penetration testing?
 
-**Answer.** Traditional SAST, SCA, DAST, IAM, API, and cloud reviews remain necessary. Add **model/tool trust-boundary testing**, adversarial input, data-classification flow review, tool-call authorization, workflow state integrity, model-provider assessment, and sensitive trace inspection. **Output:** scenarios mapped to controls, failed and passed test cases, owned residual risks, and a deployment decision. **Verify:** no critical finding is closed solely because the prompt was reworded; require an enforceable and regression-tested mitigation. [S01][S02]
+**Answer.** Traditional SAST, SCA, DAST, IAM, API, and cloud reviews remain necessary. Add **model/tool trust-boundary testing**, adversarial input, data-classification flow review, tool-call authorization, workflow state integrity, model-provider assessment, and sensitive trace inspection. **Output:** scenarios mapped to controls, failed and passed test cases, owned residual risks, and a deployment decision. **Verify:** no critical finding is closed solely because the prompt was reworded; require an enforceable and regression-tested mitigation. [S01], [S02]
 
 ### Q082. How would you create a threat-model-driven security test suite?
 
@@ -483,11 +490,11 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 ### Q090. How would you handle a confirmed prompt-injection attempt that did not cause a side effect?
 
-**Answer.** Capture minimal indicators, identify entry surface and principal, verify execution/egress logs, and determine whether the attempt crossed any policy boundary. Update tests and monitoring; avoid treating every attempt as a mandatory legal data-breach notification. **Response:** block source or tighten controls if warranted; adjust rate/permission policies. **Evidence:** trace proves no protected data disclosed and no unauthorized operation occurred, to the extent observable. If facts are incomplete, document uncertainty and continue assessment. [S01][S12]
+**Answer.** Capture minimal indicators, identify entry surface and principal, verify execution/egress logs, and determine whether the attempt crossed any policy boundary. Update tests and monitoring; avoid treating every attempt as a mandatory legal data-breach notification. **Response:** block source or tighten controls if warranted; adjust rate/permission policies. **Evidence:** trace proves no protected data disclosed and no unauthorized operation occurred, to the extent observable. If facts are incomplete, document uncertainty and continue assessment. [S01], [S12]
 
 ### Q091. How do you respond if an agent actually disclosed patient data?
 
-**Answer.** Stop the affected workflow and external route, contain credentials and access, preserve proportionate evidence, identify recipients and affected records, notify the incident-response and privacy/legal teams, and assess patient harm and statutory/contractual notification duties. Investigate model requests, tool authorization, output channels, and telemetry vendors. **Do not assume** it is automatically notifiable or automatically exempt: use PDPA criteria and any applicable sector-specific rules. **Recovery:** correct policy, regression test, verify containment, and review vendor access. [S09][S12][S17]
+**Answer.** Stop the affected workflow and external route, contain credentials and access, preserve proportionate evidence, identify recipients and affected records, notify the incident-response and privacy/legal teams, and assess patient harm and statutory/contractual notification duties. Investigate model requests, tool authorization, output channels, and telemetry vendors. **Do not assume** it is automatically notifiable or automatically exempt: use PDPA criteria and any applicable sector-specific rules. **Recovery:** correct policy, regression test, verify containment, and review vendor access. [S09], [S12], [S17]
 
 ### Q092. What does an AI incident-response playbook contain?
 
@@ -511,7 +518,7 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 ### Q097. How do you protect clinical safety when an LLM generates a misleading answer?
 
-**Answer.** Separate answer quality and clinical authority. Constrain use cases, disclose uncertainty where suitable, enforce deterministic clinical rules for high-impact decisions, and require appropriate qualified human review before patient-affecting actions. Maintain an escalation route when information is insufficient or conflicting. **Measure:** clinically reviewed scenario outcomes, harmful recommendation rates, and escalation performance. **Residual:** a well-authorized agent can still produce plausible misinformation; that is a safety issue even if no attacker is involved. OWASP lists **Misinformation (LLM07:2026)**. [S01][S17]
+**Answer.** Separate answer quality and clinical authority. Constrain use cases, disclose uncertainty where suitable, enforce deterministic clinical rules for high-impact decisions, and require appropriate qualified human review before patient-affecting actions. Maintain an escalation route when information is insufficient or conflicting. **Measure:** clinically reviewed scenario outcomes, harmful recommendation rates, and escalation performance. **Residual:** a well-authorized agent can still produce plausible misinformation; that is a safety issue even if no attacker is involved. OWASP lists **Misinformation (LLM07:2026)**. [S01], [S17]
 
 ### Q098. How should an enterprise manage model updates and silent vendor changes?
 
@@ -527,7 +534,7 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 ### Q101. How do you prevent logging and tracing vendors from becoming shadow data processors?
 
-**Answer.** Use egress registration and default-deny integrations; inventory SaaS SDKs, exception/error monitors, APM exporters, session replay, support tooling, and analytics. Enforce trace payload allowlists, avoid raw prompts in OTLP spans by default, and route data through an approved collector. **Verify:** examine emitted events under realistic flows and block unauthorized destinations. A service may act as a data intermediary or other processor depending on actual contractual and processing roles; legal classification cannot be inferred from “observability.” [S10][S11]
+**Answer.** Use egress registration and default-deny integrations; inventory SaaS SDKs, exception/error monitors, APM exporters, session replay, support tooling, and analytics. Enforce trace payload allowlists, avoid raw prompts in OTLP spans by default, and route data through an approved collector. **Verify:** examine emitted events under realistic flows and block unauthorized destinations. A service may act as a data intermediary or other processor depending on actual contractual and processing roles; legal classification cannot be inferred from “observability.” [S10], [S11]
 
 ### Q102. What is an effective governance exception process?
 
@@ -535,7 +542,7 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 ### Q103. How do you make an AI security program measurable at executive level?
 
-**Answer.** Measure coverage and outcomes: percent AI systems inventoried and risk-tiered; proportion of high-risk tools with per-call authorization and negative tests; external processors assessed; sensitive traces minimized; expired exceptions; detection and containment drill performance; unresolved critical findings; and security regression outcomes. Avoid presenting “number of malicious prompts blocked” as a stand-alone measure of safety. **Report:** trends, material incidents, residual high risks, and named decisions with provenance. Tie metrics to actual exposed workflows, not vanity usage counts. [S05][S07]
+**Answer.** Measure coverage and outcomes: percent AI systems inventoried and risk-tiered; proportion of high-risk tools with per-call authorization and negative tests; external processors assessed; sensitive traces minimized; expired exceptions; detection and containment drill performance; unresolved critical findings; and security regression outcomes. Avoid presenting “number of malicious prompts blocked” as a stand-alone measure of safety. **Report:** trends, material incidents, residual high risks, and named decisions with provenance. Tie metrics to actual exposed workflows, not vanity usage counts. [S05], [S07]
 
 ### Q104. What should a production security readiness checklist cover?
 
@@ -550,11 +557,12 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 **Answer.** It names the **failure mode and exact enforcement point**: “The model may be manipulated, so our policy gateway requires authenticated subject, patient relationship, approved purpose, and recipient before any tool runs. The model receives no privileged credentials. We test type-correct cross-tenant calls, record policy decisions, minimize traces, and have a tool kill switch. The remaining risk is misleading clinical text, which requires clinical validation and monitoring.” This is stronger than “we use guardrails, encryption, and a private VPC” because it is **specific, testable, and honest about residual risk**.
 
 ---
-# Part V — System Design and Principal-Level Scenarios (Q107–Q120)
 
-### Q107. Design a patient-data assistant for clinicians working across multiple provider organizations.
+## Part V — System Design and Principal-Level Scenarios (Q107–Q120)
 
-**Answer.** Use enterprise SSO, backend-resolved tenant and clinician identity, an approved-purpose policy, and a patient-relationship service as the **authoritative source** of which provider may access which patient. Place a tool PEP between the LLM and patient service. The assistant never chooses its own tenant or receives a broad database credential. Read tools return **only allowed fields**; clinical outputs go only to the authorized clinician, with audit and human validation for significant decisions. **Boundary:** model-generated `patientId` → trusted backend. **Tests:** first-visit versus unrelated-provider access, token expiry, tenant swap, forbidden patient fields. **Residual:** clinical interpretation error, legitimate insider misuse, and incomplete care-relationship data. See [Case A](#case-a-secure-patient-data-assistant).
+### Q107. Design a patient-data assistant for clinicians working across multiple provider organizations
+
+**Answer.** Use enterprise SSO, backend-resolved tenant and clinician identity, an approved-purpose policy, and a patient-relationship service as the **authoritative source** of which provider may access which patient. Place a tool PEP between the LLM and patient service. The assistant never chooses its own tenant or receives a broad database credential. Read tools return **only allowed fields**; clinical outputs go only to the authorized clinician, with audit and human validation for significant decisions. **Boundary:** model-generated `patientId` → trusted backend. **Tests:** first-visit versus unrelated-provider access, token expiry, tenant swap, forbidden patient fields. **Residual:** clinical interpretation error, legitimate insider misuse, and incomplete care-relationship data. See [Case A](#case-a--secure-patient-data-assistant).
 
 ### Q108. A model says 'the user confirmed the payment'. Should the tool run?
 
@@ -562,23 +570,23 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 ### Q109. Your agent is connected to five MCP servers, one of which becomes compromised. What is the containment design?
 
-**Answer.** Each server is individually allowlisted and identified, with scoped credentials and network destinations. Tool-policy enforcement remains outside all five servers; no server can directly obtain keys for another. Detect changed tool manifests, abnormal results, and denied actions. **Contain:** disable the compromised server and rotate its credentials without taking down unrelated tools; preserve minimal audit evidence; evaluate data exposure. **Verification:** an altered tool name/description cannot unlock new privileges, and the compromised server cannot pivot through other tool credentials. **Residual:** data already legitimately disclosed to it may be exposed. [S03][S02]
+**Answer.** Each server is individually allowlisted and identified, with scoped credentials and network destinations. Tool-policy enforcement remains outside all five servers; no server can directly obtain keys for another. Detect changed tool manifests, abnormal results, and denied actions. **Contain:** disable the compromised server and rotate its credentials without taking down unrelated tools; preserve minimal audit evidence; evaluate data exposure. **Verification:** an altered tool name/description cannot unlock new privileges, and the compromised server cannot pivot through other tool credentials. **Residual:** data already legitimately disclosed to it may be exposed. [S03], [S02]
 
-### Q110. Design an A2A workflow where a scheduling agent delegates to a billing agent.
+### Q110. Design an A2A workflow where a scheduling agent delegates to a billing agent
 
-**Answer.** The scheduler authenticates as a service and supplies a delegated user authorization **for a specific billing task** using a mechanism supported by the environment. The billing agent validates the issuing authority, audience, scope, tenant, purpose, task ownership, and amount limits before acting. A2A message content and Agent Cards are never the authority for payment permissions. **Boundary:** scheduler identity → billing service/user delegation. **Verification:** expired/wrong-audience grant, task-ID swap, and cross-tenant request fail. **Residual:** fraudulent but policy-permitted user requests still require risk controls. See [Case B](#case-b-enterprise-agent-and-tool-gateway). [S04]
+**Answer.** The scheduler authenticates as a service and supplies a delegated user authorization **for a specific billing task** using a mechanism supported by the environment. The billing agent validates the issuing authority, audience, scope, tenant, purpose, task ownership, and amount limits before acting. A2A message content and Agent Cards are never the authority for payment permissions. **Boundary:** scheduler identity → billing service/user delegation. **Verification:** expired/wrong-audience grant, task-ID swap, and cross-tenant request fail. **Residual:** fraudulent but policy-permitted user requests still require risk controls. See [Case B](#case-b--enterprise-agent-and-tool-gateway). [S04]
 
-### Q111. Design an enterprise agent gateway used by many engineering teams.
+### Q111. Design an enterprise agent gateway used by many engineering teams
 
 **Answer.** Centralize **identity-aware routing, model allowlists, sensitive data classes, egress, tool registry, quotas, and audit**. Keep domain authorization at each backend service and tool PEP; otherwise the gateway becomes a dangerous superuser. Allow policies by application, tenant, model, tool, and region, with approval workflows for changes. Use short-lived service identity and separate runtime secrets. **Verification:** onboarding a new team/model cannot inherit patient-data permissions by default. **Residual:** centralized outage/misconfiguration increases blast radius; separate policy administration, stages, and emergency rollback.
 
 ### Q112. A vendor offers an excellent model but only overseas inference and unclear logs. What is your decision?
 
-**Answer.** Classify the specific intended data and purpose. Ask for exact processing locations, inference logs, abuse monitoring, human access, retention, model-training use, subprocessors, and enforceable transfer protections. Involve privacy/legal stakeholders to assess PDPA and any sector/client restrictions. If needed terms cannot be verified, **do not route identifiable patient data**. Consider minimized/de-identified data if suitable or an approved alternate deployment. **Evidence:** documented vendor assessment and transfer decision, not “vendor says HIPAA compliant.” **Residual:** even approved vendors may change subprocessors or have security incidents. [S09][S10][S16]
+**Answer.** Classify the specific intended data and purpose. Ask for exact processing locations, inference logs, abuse monitoring, human access, retention, model-training use, subprocessors, and enforceable transfer protections. Involve privacy/legal stakeholders to assess PDPA and any sector/client restrictions. If needed terms cannot be verified, **do not route identifiable patient data**. Consider minimized/de-identified data if suitable or an approved alternate deployment. **Evidence:** documented vendor assessment and transfer decision, not “vendor says HIPAA compliant.” **Residual:** even approved vendors may change subprocessors or have security incidents. [S09], [S10], [S16]
 
 ### Q113. How would you secure a sensitive-data workflow that summarizes a health screening result?
 
-**Answer.** Authorize the initiating clinician and allowed patient/report. Have a backend project only permitted clinical fields, attach task purpose and prohibited disclosure destinations, route through an approved model, and return output via an authorized UI. Do not send raw reports to general observability; retain a minimal audit and clinical review state. Use specialist review before generating patient-facing recommendations that may affect care. **Tests:** unrelated-provider denial, route policy for restricted fields, trace inspection, unsafe/missing-result scenario. **Residual:** hallucination and clinical overinterpretation. See [Case C](#case-c-sensitive-health-screening-workflow).
+**Answer.** Authorize the initiating clinician and allowed patient/report. Have a backend project only permitted clinical fields, attach task purpose and prohibited disclosure destinations, route through an approved model, and return output via an authorized UI. Do not send raw reports to general observability; retain a minimal audit and clinical review state. Use specialist review before generating patient-facing recommendations that may affect care. **Tests:** unrelated-provider denial, route policy for restricted fields, trace inspection, unsafe/missing-result scenario. **Residual:** hallucination and clinical overinterpretation. See [Case C](#case-c--sensitive-health-screening-workflow).
 
 ### Q114. A legitimate user asks an agent to email an entire patient record to an external address. What controls apply?
 
@@ -586,7 +594,7 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 ### Q115. A company wants to turn on raw LLM traces for debugging in a US SaaS account. How would you respond?
 
-**Answer.** Start from necessity: which incidents cannot be diagnosed with metadata? Assess actual personal-data content, whether the US SaaS is a processor, transfer controls, access and retention, and the ease of patient re-identification. Prefer allowlisted metrics and privacy-preserving structured spans. If a temporary raw capture is justified, seek explicit scope/owner/TTL approval and limit access; check all legal and contract requirements first. **Verify:** sampled spans and deletion outcomes. **Do not assert:** removing `patientId`, hosting in Singapore, or a HIPAA badge resolves the issue. [S10][S11][S16]
+**Answer.** Start from necessity: which incidents cannot be diagnosed with metadata? Assess actual personal-data content, whether the US SaaS is a processor, transfer controls, access and retention, and the ease of patient re-identification. Prefer allowlisted metrics and privacy-preserving structured spans. If a temporary raw capture is justified, seek explicit scope/owner/TTL approval and limit access; check all legal and contract requirements first. **Verify:** sampled spans and deletion outcomes. **Do not assert:** removing `patientId`, hosting in Singapore, or a HIPAA badge resolves the issue. [S10], [S11], [S16]
 
 ### Q116. An agent uses an admin-level service role to call microservices. How would you refactor safely?
 
@@ -604,17 +612,17 @@ For every meaningful AI feature, produce a **data-flow diagram, risk register, s
 
 **Answer.** Establish one central registry of AI uses and approved processors, but enforce policies at **gateway + service** boundaries. Provide reusable IAM, PEP, safe telemetry, and release evidence patterns so teams do not invent them. Assign one business owner and a technical/security owner per high-risk application; distinguish vendor deployment approvals from model security claims. **Verify:** discovery reconciles real model traffic and tool registrations with inventory, and every production integration has a responsible owner and risk decision. **Residual:** exceptions, shadow tools, and legacy applications need targeted remediation.
 
-### Q120. In a Principal interview, defend a choice between 'more prompt guardrails' and an external execution policy engine.
+### Q120. In a Principal interview, defend a choice between 'more prompt guardrails' and an external execution policy engine
 
 **Answer.** Use both only where each adds measurable value, but **never substitute prompt guardrails for execution policy**. A model-level guardrail may reduce attempts and improve helpfulness. A policy engine independently prevents unauthorized patient access, unapproved recipients, and out-of-scope writes even when the model is manipulated. Describe the protected resource/action, trusted identity and context, deny behavior, audit evidence, and failure handling. **Decision:** invest first in deterministic enforcement for high-impact side effects; then test additional detection/guardrails for incremental risk reduction. **Residual:** legitimate but unsafe advice still needs clinical safeguards.
 
 ---
 
-# Enterprise architecture patterns
+## Enterprise architecture patterns
 
 The following designs are reference patterns for interview discussion, **not deployable security guarantees**. Actual policies must follow the legal role and data model of the organization.
 
-## Case A — Secure patient-data assistant
+### Case A — Secure patient-data assistant
 
 **Business need:** Clinicians at authorized provider organizations ask questions about a patient's care context. A patient's existence in a global account directory **does not establish** a provider's right to access that patient's clinical data.
 
@@ -654,7 +662,7 @@ TB4: Service -> telemetry; minimize and control processors
 
 **Launch gate:** demonstrate a denied, type-valid cross-provider request; secure tool calls even if model requests unauthorized access; verify all outbound data paths; confirm clinical review ownership and incident plan.
 
-## Case B — Enterprise agent and tool gateway
+### Case B — Enterprise agent and tool gateway
 
 **Business need:** Engineering teams deploy multiple LLM-powered agents through one security policy plane while retaining domain-level authorization.
 
@@ -691,7 +699,7 @@ TB4: Service -> telemetry; minimize and control processors
 
 **Primary risks:** gateway credential concentration, authorization bypass through direct service paths, MCP tool changes, A2A delegation confusion, and operational misconfiguration. **Verification:** inventory reconciliation, forbidden direct-service calls, token audience tests, tool swap tests, and egress observations. **Residual:** central policy errors can have organization-wide impact; use staged rollout and independent service controls.
 
-## Case C — Sensitive health-screening workflow
+### Case C — Sensitive health-screening workflow
 
 **Business need:** A clinician requests an AI-assisted explanation of a fixed health-screening result, without letting the assistant automatically change the patient's record or make final clinical decisions.
 
@@ -715,7 +723,7 @@ Separate: vendor processing, trace export, support access and backups
 
 **Data inventory:** screening readings, demographics needed for interpretation, dates/time-zone precision, sensitive medical history, and optional identifiers. **Decisions:** which fields are necessary; whether input to provider stays regional; what processor contracts apply; who may see raw output; whether to retain conversational text; how to correct a misleading result. **Security tests:** unauthorized patient, wrong-purpose, missing field, unsafe output, error-log leakage, and disallowed external region. **Residual:** clinically plausible but incorrect advice and re-identification risk in context-rich telemetry.
 
-## Case D — AI vendor governance for a regulated platform
+### Case D — AI vendor governance for a regulated platform
 
 **Business need:** Several vendors provide model inference, AI-assisted code review, transcription, and observability. Every provider must be assessed based on its **actual processing and permissions**, not on generic certification language.
 
@@ -738,9 +746,10 @@ Separate: vendor processing, trace export, support access and backups
 **Minimum records:** vendor legal entity; product and service; owner; geography of every relevant flow; whether data is used for training or secondary purposes; retention; security/access; customer audit rights; breach notification; subprocessors; DPA/BAA as applicable; exit/deletion; and risk acceptance. **Hard stop:** clinical data flowing to an unknown recipient or unapproved purpose. **Residual:** contracts do not physically prevent every vendor incident; combine legal, technical, and detective controls.
 
 ---
-# Production decision matrices and security checklists
 
-## Risk-tier and human-oversight decision matrix
+## Production decision matrices and security checklists
+
+### Risk-tier and human-oversight decision matrix
 
 **Illustrative enterprise policy, not a statutory classification.** Organizations must choose risk thresholds based on actual services, affected individuals, contracts, and law.
 
@@ -752,7 +761,7 @@ Separate: vendor processing, trace export, support access and backups
 | **T3 — High impact** | Agent proposing patient-affecting changes | Clinical/high harm | Sensitive writes or external disclosure | Named clinical and security/privacy decision makers | Exact-action approval; separation of duties; action gating; enhanced red team; rapid kill switch |
 | **T4 — Prohibited/unapproved** | Agent with unrestricted patient DB and arbitrary outbound tool | Highly sensitive | Broad uncontrolled writes/egress | **Do not deploy as designed** | Redesign scopes and control boundaries before reassessment |
 
-## Tool authorization and side-effect decision matrix
+### Tool authorization and side-effect decision matrix
 
 | Action category | Model may propose? | Executor must independently verify | Human approval baseline | Key telemetry |
 |---|---|---|---|---|
@@ -764,7 +773,7 @@ Separate: vendor processing, trace export, support access and backups
 | Add/change MCP tool | No autonomous production registration | Source/provenance, capability/risk review, permission changes | Technical/security owner | Manifest digest and approval |
 | Delegate A2A task | Yes, when permitted | Peer identity, audience, task owner, scope, tenant, purpose | Depends on end effect, not messaging mechanism | Chain of delegation and policy result |
 
-## Vendor / hosting decision matrix
+### Vendor / hosting decision matrix
 
 | Option | Control advantages | Material risk questions | Required evidence | Example decision |
 |---|---|---|---|---|
@@ -774,29 +783,29 @@ Separate: vendor processing, trace export, support access and backups
 | **Third-party AI observability** | Developer diagnostics | PHI/PII in traces; actual region; support access | Trace payload samples; DPA; retention; transfer assessment | Prefer minimal, structured metadata; raw traces gated |
 | **Unverified vendor** | None sufficient for sensitive use | Unknown location/training/logging/ownership | Missing | **Block sensitive data** until assessed |
 
-**Non-equivalence statements:** “Singapore region” ≠ “all processing stays in Singapore”; “zero training” ≠ “zero retention”; “HIPAA-ready” ≠ “HIPAA compliant”; “ISO/IEC 42001 certified” ≠ “PDPA compliant”; “encrypted at rest” ≠ “authorized processing”; “mTLS” ≠ “patient access authorization”. [S07][S10][S16]
+**Non-equivalence statements:** “Singapore region” ≠ “all processing stays in Singapore”; “zero training” ≠ “zero retention”; “HIPAA-ready” ≠ “HIPAA compliant”; “ISO/IEC 42001 certified” ≠ “PDPA compliant”; “encrypted at rest” ≠ “authorized processing”; “mTLS” ≠ “patient access authorization”. [S07], [S10], [S16]
 
-## Singapore legal-versus-guidance decision table
+### Singapore legal-versus-guidance decision table
 
 | Statement | Classification | Accurate interpretation / action | Primary source |
 |---|---|---|---|
 | PDPA applies to relevant personal-data processing | **LAW** | Identify the organization's role, purpose, data and applicable provisions | [S09] |
-| Reasonable security arrangements for personal data | **LAW** | Protection Obligation under s.24; context-specific controls | [S09][S11] |
-| Protect overseas transfers under applicable transfer rules | **LAW + regulations** | Comparable protection subject to applicable mechanisms/exceptions; not blanket locality | [S09][S10] |
+| Reasonable security arrangements for personal data | **LAW** | Protection Obligation under s.24; context-specific controls | [S09], [S11] |
+| Protect overseas transfers under applicable transfer rules | **LAW + regulations** | Comparable protection subject to applicable mechanisms/exceptions; not blanket locality | [S09], [S10] |
 | Data minimization in AI development | **GUIDANCE** plus general legal-purpose considerations | PDPC AI guideline encourages it; exact duties stem from law | [S11] |
 | DPIA for every AI model is mandatory | **Not established as blanket PDPA requirement** | DPIA is prudent for high-risk cases; consult sector/client obligations | [S11] |
-| Genuinely anonymized data may fall outside PDPA | **Legal-definition consequence**, interpreted in **GUIDANCE** | Must assess serious possibility of re-identification | [S10][S11] |
+| Genuinely anonymized data may fall outside PDPA | **Legal-definition consequence**, interpreted in **GUIDANCE** | Must assess serious possibility of re-identification | [S10], [S11] |
 | PDPC breach notification after notifiability determination | **LAW + regulations** | As soon as practicable, no later than 3 calendar days for notifiable breach | [S12] |
 | 500 affected individuals is significant-scale threshold | **Regulatory criterion** | Can trigger notification to PDPC even without prescribed sensitive data | [S12] |
-| GenAI/Agentic Model AI Governance Framework | **GUIDANCE** | Risk management framework, not a substitute for PDPA | [S14][S15] |
+| GenAI/Agentic Model AI Governance Framework | **GUIDANCE** | Risk management framework, not a substitute for PDPA | [S14], [S15] |
 | HIA 2026 may impose healthcare-specific duties | **LAW when applicable/in force** | Confirm covered entities, commencement, phased rules and MOH specifications | [S17] |
 | HIPAA applies to every Singapore hospital app | **Incorrect** | Requires a relevant HIPAA-covered entity/BA relationship and regulated PHI | [S16] |
 
-## Production release checklist
+### Production release checklist
 
 Use the following as a **suggested internal security gate**, not as a claim that every item is legally mandated.
 
-### A. Governance and data flows
+#### A. Governance and data flows
 
 - [ ] Named business, engineering, security, and privacy owners; clinical owner where relevant.
 - [ ] AI use case, autonomy tier, model/provider/version, and tool set registered.
@@ -806,7 +815,7 @@ Use the following as a **suggested internal security gate**, not as a claim that
 - [ ] Overseas processing and transfer controls assessed; region and subprocessor claims verified for *specific product/features*.
 - [ ] DPIA/risk assessment and residual risk decision recorded where appropriate.
 
-### B. Tool, identity, and network controls
+#### B. Tool, identity, and network controls
 
 - [ ] All high-risk tool calls have authenticated principal, delegated identity context, per-resource authorization, and deny-by-default behavior.
 - [ ] Tool registry contains owner, version, schema, side-effect level, allowed resources, and approval requirement.
@@ -818,7 +827,7 @@ Use the following as a **suggested internal security gate**, not as a claim that
 - [ ] Pods/services cannot directly access unneeded private databases or outbound destinations.
 - [ ] MCP/A2A servers are allowlisted and their credentials, manifests, task and agent identity checked.
 
-### C. Model and content defenses
+#### C. Model and content defenses
 
 - [ ] Untrusted content is labeled and never treated as an authority to change tool privileges.
 - [ ] Prompt hierarchy and injection detection are **defense in depth**, not only execution control.
@@ -827,7 +836,7 @@ Use the following as a **suggested internal security gate**, not as a claim that
 - [ ] Clinical/harmful output controls and qualified human oversight are configured where needed.
 - [ ] Safe fallback/rollback and model/tool/tenant kill switches are available.
 
-### D. Testing, operations, and assurance
+#### D. Testing, operations, and assurance
 
 - [ ] CI includes deterministic unauthorized tool-policy tests and automated negative cross-tenant cases.
 - [ ] Adversarial scenario suite covers lower-trust user/tool/A2A content with synthetic data.
@@ -839,7 +848,7 @@ Use the following as a **suggested internal security gate**, not as a claim that
 - [ ] Risk acceptance and exception expiry are owned, time-bound, and monitored.
 - [ ] Actual production configuration has been reviewed—not only declarative YAML/screenshots.
 
-## Security regression test catalogue
+### Security regression test catalogue
 
 Each row is a **safe, high-level test objective**. Implement only with permitted synthetic data and isolated endpoints; the catalogue deliberately omits exploitation payloads.
 
@@ -862,9 +871,9 @@ Each row is a **safe, high-level test objective**. Implement only with permitted
 | SEC-15 | Incident | Disable sensitive tool during dry run | Subsequent calls blocked and responder notified | Drill record |
 | SEC-16 | Model update | Model/prompt/tool version change | Required safety suite and approval execute | CI + release artifact |
 
-## Incident examples — hypothetical training scenarios (not claims about real incidents)
+### Incident examples — hypothetical training scenarios (not claims about real incidents)
 
-### Incident I — Unauthorized patient disclosure through an overpowered agent
+#### Incident I — Unauthorized patient disclosure through an overpowered agent
 
 **Situation:** A clinician assistant's tool returns a record the clinician is not authorized to view. A model-level guardrail had been configured, but the backend trusted the model's supplied `patientId`.
 
@@ -875,7 +884,7 @@ Each row is a **safe, high-level test objective**. Implement only with permitted
 - **Governance:** update threat model, business owner, release test SEC-03/04, privacy review.
 - **Residual:** legitimate users may still misuse authorized access.
 
-### Incident II — Sensitive trace leakage to a third-party analytics provider
+#### Incident II — Sensitive trace leakage to a third-party analytics provider
 
 **Situation:** Debug tracing ships clinical narrative and rare condition details to an overseas SaaS service. Direct identifiers were removed, but the combined text remains potentially identifiable.
 
@@ -886,7 +895,7 @@ Each row is a **safe, high-level test objective**. Implement only with permitted
 - **Governance:** processor register, DPIA/transfer assessment, trace data-retention schedule.
 - **Residual:** remaining metadata can still be linkable; periodic reassessment.
 
-### Incident III — Tool manifest change widens agent permissions
+#### Incident III — Tool manifest change widens agent permissions
 
 **Situation:** A previously read-only MCP integration is updated to offer an operation with external side effects. The agent automatically discovers and proposes it.
 
@@ -897,7 +906,7 @@ Each row is a **safe, high-level test objective**. Implement only with permitted
 - **Governance:** supply-chain approval and vendor change notification.
 - **Residual:** malicious changes to existing approved tool implementation still require runtime constraints.
 
-### Incident IV — Wrong clinical recommendation despite proper access control
+#### Incident IV — Wrong clinical recommendation despite proper access control
 
 **Situation:** The assistant accesses only allowed data but generates an unsupported interpretation that a clinician initially accepts.
 
@@ -908,7 +917,7 @@ Each row is a **safe, high-level test objective**. Implement only with permitted
 - **Governance:** patient-safety owner, validation protocol, release thresholds and retraining/review.
 - **Residual:** no generative model can guarantee correct clinical advice.
 
-## Governance RACI example
+### Governance RACI example
 
 `A = Accountable; R = Responsible; C = Consulted; I = Informed` — **illustrative internal policy**.
 
@@ -925,7 +934,7 @@ Each row is a **safe, high-level test objective**. Implement only with permitted
 
 For a clinical service, **qualified clinical governance** may have non-delegable responsibilities under organizational and sector requirements. A RACI does not override legal duties.
 
-## Reference policy pseudo-code (defensive architecture only)
+### Reference policy pseudo-code (defensive architecture only)
 
 ```ts
 // Illustrative security invariant: the model proposes; trusted services authorize.
@@ -975,7 +984,7 @@ async function executeAuthorizedTool(
 
 **Security invariant:** schema parsing is not authorization; a model-generated ID cannot change the trusted principal; the backend resolves resource ownership; approvals are bound and checked at the point of use; sensitive logs exclude raw payloads by default. Implementation details (atomic action, replay protection, conditional writes, tenant policy, credential issuance) require additional domain-specific design.
 
-## Ten Principal-level interview challenges to practice
+### Ten Principal-level interview challenges to practice
 
 1. **Scope dispute:** “The user authenticated; why can't we let the model choose a patient ID?” → Explain object authorization and purpose boundaries.
 2. **Guardrail optimism:** “Our jailbreak detector scores 99%; can we skip tool ACLs?” → Explain probabilistic filters versus deterministic side-effect prevention.
@@ -988,7 +997,7 @@ async function executeAuthorizedTool(
 9. **Governance:** “ISO/IEC 42001 certification means each AI output is safe, correct?” → Explain AIMS audit scope and separate runtime evidence.
 10. **Incident:** “We found a prompt injection. Must PDPC be notified in three days?” → Distinguish attempted injection, personal-data breach, notifiability determination and timing.
 
-## Interview scoring rubric
+### Interview scoring rubric
 
 | Competency | Weak / basic answer | Strong senior answer | Principal-level answer |
 |---|---|---|---|
